@@ -1,30 +1,53 @@
-// Importing the necessary modules
+// --- Core Node Modules & Packages ---
 import express from "express";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+// import cors from "cors"; // Uncomment if you need to enable CORS
 
-// Importing the routes
+// --- Local Module Imports ---
+import { connectDB } from "./utils/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
-import otherRoutes from "./routes/otherRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import otherRoutes from "./routes/otherRoutes.js"; // General routes like root and /about or pages route.
+import pageNotFound from "./routes/pageNotFound.js"; // Middleware to handle 404 errors
 
-// Configuring the environment variables
+// --- Environment Variables Configuration ---
 dotenv.config();
 
-const app = express(); // Creating the express app
-const PORT = process.env.PORT; // Setting the port
+// --- Express App Initialization ---
+const app = express();
+const PORT = process.env.PORT;
 
-app.use(express.json()); // Middleware
+// --- Core Middlewares ---
+app.use(express.json()); // To parse JSON request bodies
+app.use(cookieParser()); // To parse cookies from headers
 
-// Add this root route:
+// --- API Routes ---
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/courses", courseRoutes);
-app.use("/", otherRoutes);
+app.use("/api/v1/payment", paymentRoutes); // Added payment routes
+app.use("/", otherRoutes); // General routes like root and /about
 
-// Starting the server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`)    
-});
+// --- Page Not Found Middleware --- This must be the last app.use() call for it to work correctly
+app.use(pageNotFound); // Middleware to handle 404 errors
 
-export default app; // Exporting the app
+
+
+// Starting the server only after a successful database connection
+connectDB().then(() => {
+    // Starting the server
+    app.listen(PORT, () => {
+        console.log(`Hence Development Server started running on port ${PORT}`)
+    });
+}).catch(
+    (error) => {
+        // Log the error and exit the process
+        console.error("Server isn't started due to DB connection Failure:", error)
+        process.exit(1); // Exit the process with a failure code
+    }
+);
+
+export default app;
