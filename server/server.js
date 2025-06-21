@@ -12,8 +12,9 @@ import otherRoutes from "./routes/otherRoutes.js";
 dotenv.config();
 
 const app = express(); // Creating the express app
-app.use(express.json()); // Middleware
 const PORT = process.env.PORT; // Setting the port
+
+app.use(express.json()); // Middleware
 
 // Add this root route:
 app.use("/api/v1/auth", authRoutes);
