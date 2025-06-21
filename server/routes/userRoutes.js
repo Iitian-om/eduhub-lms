@@ -1,8 +1,8 @@
-// import express from "express";
-// import { getUserProfile } from "../controllers/userController.js";
+import express from "express";
+import { getUserProfile } from "../controllers/userController.js";
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.get("/profile", getUserProfile);
+router.get("/profile", getUserProfile);
 
-// export default router; 
+export default router; 
