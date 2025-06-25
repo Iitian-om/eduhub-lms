@@ -1,6 +1,6 @@
 # EduHub LMS
 
-![EduHub Logo](eduhub-logo.png)
+![EduHub Logo](eduhub-logo-1.png)
 
 A modern, scalable and feature-rich Learning Management System (LMS) designed to unify digital education experiences for students, instructors, and administrators. EduHub streamlines course delivery, management, and analytics with a beautiful UI and powerful backend.
 
@@ -15,22 +15,38 @@ EduHub aims to be the go-to platform for digital learning, supporting interactiv
 ## 🗂️ Project Structure
 
 ```
+
 eduhub-lms/
-├── client/                 # Frontend (Next.js)
-│   ├── public/
-│   └── src/
-│       ├── components/
-│       ├── pages/
-│       └── styles/
+├── client/                 # Frontend (Next.js App Router)
+│   ├── app/                # App directory (Next.js routing, pages, layouts)
+│   │   ├── components/     # Reusable React components (Header, Footer, etc.)
+│   │   ├── context/        # React context (UserContext for auth state)
+│   │   ├── about/          # About page
+│   │   ├── dashboard/      # Dashboard page (protected)
+│   │   ├── profile/        # User profile page (protected)
+│   │   ├── register/       # Registration page
+│   │   ├── login/          # Login page
+│   │   └── ...             # Other app pages/routes
+│   ├── public/             # Static assets (images, favicon, etc.)
+│   ├── package.json        # Frontend dependencies and scripts
+│   ├── postcss.config.mjs  # PostCSS config for Tailwind CSS
+│   ├── next.config.mjs     # Next.js config
+│   ├── tailwind.config.js  # Tailwind CSS config (if present)
+│   └── .env.local          # Frontend environment variables
 ├── server/                 # Backend (Node.js + Express)
-│   ├── controllers/
-│   ├── routes/
-│   ├── models/
-│   └── utils/
-├── .env.local              # Local environment variables
+│   ├── controllers/        # Route controllers (auth, user, course, etc.)
+│   ├── routes/             # Express route definitions
+│   ├── models/             # Mongoose models (User, Course, etc.)
+│   ├── middlewares/        # Custom Express middleware (auth, error, etc.)
+│   ├── utils/              # Utility functions (DB connection, JWT, etc.)
+│   ├── server.js           # Main Express server entry point
+│   ├── package.json        # Backend dependencies and scripts
+│   └── .env                # Backend environment variables (not committed)
+├── eduhub-logo.png         # Logo used in README/UI
 ├── README.md
-├── package.json
-└── eduhub-logo.png         # Logo used in README/UI
+├── .gitignore
+└── package-lock.json
+
 ```
 
 ---

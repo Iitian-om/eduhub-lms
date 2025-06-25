@@ -1,3 +1,6 @@
+// This file contains middleware functions for authentication and authorization in an Express.js application
+
+// Import necessary libraries and models
 import jwt from "jsonwebtoken"; // JSON Web Token is a library to create and verify tokens
 import { User } from "../models/User.js"; // User model is used to get the user from the database
 

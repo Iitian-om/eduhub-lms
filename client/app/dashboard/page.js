@@ -22,4 +22,4 @@ export default function DashboardPage() {
       <p className="mb-2">This is your dashboard. Here you can see your enrolled courses, progress, and more features coming soon!</p>
     </div>
   );
-} 
+}

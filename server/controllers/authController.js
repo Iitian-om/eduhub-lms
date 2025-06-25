@@ -1,3 +1,5 @@
+// Description: Handles user authentication including registration, login, and logout functionalities.
+import express from "express";
 import { User } from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/jwt.js";
@@ -120,4 +122,14 @@ export const login = async (req, res) => {
             error: error.message,
         });
     }
+};
+
+// Logout user (clear the cookie)
+export const logout = (req, res) => {
+    res.cookie("token", "", {
+        httpOnly: true,
+        expires: new Date(0),
+        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+        secure: process.env.NODE_ENV === "production",
+    }).json({ success: true, message: "Logged out successfully" });
 };

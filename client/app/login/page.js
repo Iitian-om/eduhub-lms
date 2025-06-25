@@ -30,7 +30,7 @@ const LoginPage = () => {
         throw new Error(data.message || "Invalid credentials");
       }
       toast.success("Login successful!");
-      router.push("/dashboard");
+      router.push("/dashboard"); // Redirect user to dashboard after log in.
     } catch (err) {
       setError(err.message);
       toast.error(err.message);
