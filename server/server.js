@@ -2,6 +2,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 // import cors from "cors"; // Uncomment if you need to enable CORS
 
 // --- Local Module Imports ---
@@ -23,6 +24,32 @@ const PORT = process.env.PORT;
 // --- Core Middlewares ---
 app.use(express.json()); // To parse JSON request bodies
 app.use(cookieParser()); // To parse cookies from headers
+
+
+// Define allowed origins for CORS by using an array
+const allowedOrigins = [ "http://localhost:3000", "https://www.eduhub.in" ];
+
+// If in production, also allow the live frontend URL by appending lpd it to the allowedOrigins array
+if (process.env.NODE_ENV === "production") {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
+// CORS Configuration
+app.use(
+    cors(
+        {
+            origin: allowedOrigins, // Allow requests from your [lde, lpd]
+            /* 
+                Here
+                lde = Local_Development_Environment = "http://localhost:3000"
+                lpd = Live_Production_Domain = "https://www.eduhub.in" (replace with actual domain)
+            */
+            methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Allowed HTTP methods
+            credentials: true, // Allow cookies to be sent and received
+        }
+    )
+);
+
 
 // --- API Routes ---
 app.use("/api/v1/auth", authRoutes);
