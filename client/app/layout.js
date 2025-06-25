@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Toaster } from "react-hot-toast";
+import { UserProvider } from "./context/UserContext";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -15,14 +16,19 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning={true}>
-      <body className={`${inter.className} flex flex-col min-h-screen`}>
-        <Toaster position="bottom-right" />
-        <Header />
-        <main className="flex-grow container mx-auto px-6 py-8">
-          {children}
-        </main>
-        <Footer />
+    <html lang="en">
+      <body
+        className={`${inter.className} flex flex-col min-h-screen`}
+        suppressHydrationWarning={true}
+      >
+        <UserProvider>
+          <Toaster position="bottom-right" />
+          <Header />
+          <main className="flex-grow container mx-auto px-6 py-8">
+            {children}
+          </main>
+          <Footer />
+        </UserProvider>
       </body>
     </html>
   );

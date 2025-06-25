@@ -1,7 +1,6 @@
 /**
- * @description Get user profile
- * @route GET /api/v1/users/profile
- * @access Private
+  Get user profile
+  GET /api/v1/users/profile
  */
 export const getUserProfile = (req, res) => {
     // The user object is attached to the request in the isAuthenticated middleware.
