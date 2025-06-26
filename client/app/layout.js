@@ -1,6 +1,6 @@
 // Import necessary modules and components
-import { Inter } from "next/font/google";
 import "./globals.css";
+import { Inter } from "next/font/google";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Toaster } from "react-hot-toast";
@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
         <UserProvider>
           <Toaster position="bottom-right" />
           <Header />
-          <main className="flex-grow container mx-auto px-6 py-8">
+          <main className="flex-1">
             {children}
           </main>
           <Footer />
