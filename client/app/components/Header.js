@@ -29,7 +29,7 @@ const Header = () => {
             alt="EduHub Logo-bg removed"
             width={150}
             height={75}
-            className="rounded-full"
+            style={{ width: 'auto', height: 'auto' }}
             priority
           />
 

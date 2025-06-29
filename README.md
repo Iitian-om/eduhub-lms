@@ -1,6 +1,6 @@
 # EduHub LMS
 
-![EduHub Logo](eduhub-logo-1.png)
+![EduHub Logo](./client/public/eduhub-logo.png)
 
 A modern, scalable and feature-rich Learning Management System (LMS) designed to unify digital education experiences for students, instructors, and administrators. EduHub streamlines course delivery, management, and analytics with a beautiful UI and powerful backend.
 

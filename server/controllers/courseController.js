@@ -39,4 +39,4 @@ export const createCourse = async (req, res) => {
             error: error.message,
         });
     }
-}; 
+};

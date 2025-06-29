@@ -31,7 +31,6 @@ export default function DashboardPage() {
     // Dashboard Page
     <div className="min-h-[80vh] py-8 px-2 bg-[#F7F9FA]">
       <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-
         {/* Welcome Card */}
         <div className="col-span-1 md:col-span-2 bg-white rounded-xl shadow p-6 flex flex-col justify-between">
           <div>
@@ -42,6 +41,7 @@ export default function DashboardPage() {
               Here's your personalized dashboard. Track your courses, progress, and explore new learning opportunities!
             </p>
           </div>
+          {/* Buttons in Welcome Card */}
           <div className="flex flex-wrap gap-4 mt-4">
             <Link href="/courses" className="bg-[#29C7C9] text-white px-4 py-2 rounded shadow hover:bg-[#22b3b5] transition">
               Browse Courses

@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import express from "express";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 // --- Local Module Imports ---
 import { connectDB } from "./utils/db.js";
@@ -25,6 +26,9 @@ const PORT = process.env.PORT;
 // --- Core Middlewares ---
 app.use(express.json()); // To parse JSON request bodies
 app.use(cookieParser()); // To parse cookies from headers
+
+// --- Additional Middlewares ---
+app.use("/uploads", express.static(path.join(process.cwd(), "server/uploads")));
 
 // --- CORS Configuration ---
 // Allow requests from frontend (localhost:3000) and send cookies
@@ -47,8 +51,7 @@ app.use("/", otherRoutes); // General routes like root and /about
 // --- Page Not Found Middleware --- This must be the last app.use() call for it to work correctly
 app.use(pageNotFound); // Middleware to handle 404 errors
 
-// --- Server Startup Sequence ---
-// Connect to the database first, then start the server
+// --- Server Startup Sequence --- Connect to the database first, then start the server
 connectDB().then(() => {
     app.listen(PORT, () => {
         console.log(`Hence Development Server started running on port ${PORT}`)
@@ -60,5 +63,6 @@ connectDB().then(() => {
         process.exit(1); // Exit the process with a failure code
     }
 );
+
 
 export default app;

@@ -5,7 +5,7 @@ const courseSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please enter course title"],
         minLength: [4, "Title must be at least 4 characters"],
-        maxLength: [80, "Title can't exceed 80 characters"],
+        maxLength: [20, "Title can't exceed 80 characters"],
     },
     description: {
         type: String,
@@ -20,11 +20,16 @@ const courseSchema = new mongoose.Schema({
         type: String,
         enum: ["Beginner", "Intermediate", "Advanced"],
         default: "Beginner",
+        required: true,
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "User", // Reference to the user who created the course
         required: true,
+    },
+    profile_picture: {
+        type: String,
+        default: "", // Cloudinary URL
     },
     lectures: [
         {
@@ -39,4 +44,4 @@ const courseSchema = new mongoose.Schema({
     },
 });
 
-export const Course = mongoose.model("Course", courseSchema); 
+export const Course = mongoose.model("Course", courseSchema);

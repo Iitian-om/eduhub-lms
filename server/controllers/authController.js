@@ -6,42 +6,65 @@ import { generateToken } from "../utils/jwt.js";
 
 // Register a new user
 export const register = async (req, res) => {
-    // Get user details from the request body
-    const { name, email, password } = req.body;
+    // Get user details from the request body which have form data attached to it
+    // and profilePic from the request file (if uploaded)
+    const { name, userName, email, password, gender } = req.body;
 
-    // Check if all fields are provided
-    if (!name || !email || !password) {
+    // Validate required fields
+    if (!name || !userName || !email || !password || !gender) {
         return res.status(400).json({
             success: false,
-            message: "Please enter all fields",
+            message: "Please enter all * marked fields",
+        });
+    }
+    // Validate gender
+    if (!["male", "female", "Male", "Female"].includes(gender)) {
+        return res.status(400).json({
+            success: false,
+            message: "Gender must be either 'Male' or 'Female'",
         });
     }
 
     try {
-        // Check if a user with the same email already exists
-        let user = await User.findOne({ email });
-
+        // Check if a user with the same email or userName already exists
+        let user = await User.findOne({ $or: [{ email }, { userName }] });
         if (user) {
             return res.status(409).json({
                 success: false,
-                message: "User already exists",
+                message: "User with this email or username already exists",
             });
         }
-
+        
         // Hash the password for security
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const salt = await bcrypt.genSalt(7); // Salt rounds can be adjusted for security vs performance
+        const hashedPassword = await bcrypt.hash(password, salt); // Hash the password using bcrypt
+        
+        // Handle profilePic upload
+        let profile_picture = "";
+        if (req.file) {
+            console.log("Profile picture uploaded successfully: ", req.file);
+            profile_picture = req.file.path; // Use Cloudinary URL directly
+        }
+
+        // Capitalize first letter
+        const normalizedGender = gender.charAt(0).toUpperCase() + gender.slice(1).toLowerCase();
 
         // Create the new user in the database
         user = await User.create({
             name,
+            userName,
             email,
+            gender: normalizedGender,
+            profile_picture,
             password: hashedPassword,
+            Courses_Enrolled_In: [],
+            Courses_Created: [],
+            // role and createdAt will use defaults
         });
 
         // Generate a JWT token for the new user
         const token = generateToken(user);
-
+        
         // Set the token as a cookie and send the response
         res.status(201)
             .cookie("token", token, {

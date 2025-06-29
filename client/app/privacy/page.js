@@ -8,7 +8,7 @@ export default function PrivacyPolicyPage() {
           <li>We collect only necessary information to provide our services.</li>
           <li>Your data is never sold to third parties.</li>
           <li>We use cookies for authentication and improving user experience.</li>
-          <li>You can contact us anytime to request data deletion.</li>
+          <li>You can contact us anytime to request data modification/deletion of your data note that their maybe some charges as well depends upon your request.</li>
         </ul>
         <p className="text-gray-600">For more details, contact us at <a href="mailto:support@eduhub.com" className="text-[#29C7C9] hover:underline">support@eduhub.com</a>.</p>
       </div>
