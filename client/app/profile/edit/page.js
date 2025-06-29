@@ -18,13 +18,13 @@ export default function EditProfilePage() {
     location: "",
     gender: ""
   });
+  const [selectedFile, setSelectedFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
     } else if (user) {
-      // Pre-fill form with current user data
       setFormData({
         name: user.name || "",
         userName: user.userName || "",
@@ -44,11 +44,54 @@ export default function EditProfilePage() {
     }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("File size must be less than 2MB");
+        return;
+      }
+      setSelectedFile(file);
+    }
+  };
+
+  const uploadProfilePicture = async () => {
+    if (!selectedFile) return null;
+
+    const formData = new FormData();
+    formData.append("profile_picture", selectedFile);
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/profile/upload`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to upload profile picture");
+      }
+
+      return data.profile_picture;
+    } catch (error) {
+      toast.error("Failed to upload profile picture");
+      throw error;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
+      let profilePicture = null;
+      
+      if (selectedFile) {
+        profilePicture = await uploadProfilePicture();
+      }
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/profile`, {
         method: "PUT",
         headers: {
@@ -64,7 +107,6 @@ export default function EditProfilePage() {
         throw new Error(data.message || "Failed to update profile");
       }
 
-      // Update the user context with new data
       setUser(data.user);
       toast.success("Profile updated successfully!");
       router.push("/profile");
@@ -83,16 +125,47 @@ export default function EditProfilePage() {
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-[#22292F]">Edit Profile</h1>
-          <Link 
-            href="/profile" 
-            className="text-[#29C7C9] hover:text-[#22b6b7] font-medium"
-          >
-            ← Back to Profile
+          <Link href="/profile" className="text-[#29C7C9] hover:text-[#22b6b7] font-medium">
+            Back to Profile
           </Link>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Name */}
+          <div className="flex flex-col items-center space-y-4">
+            <div className="relative">
+              {user.profile_picture?.url ? (
+                <img
+                  src={user.profile_picture.url}
+                  alt="Profile"
+                  className="w-24 h-24 rounded-full object-cover border-4 border-[#29C7C9] shadow"
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-full bg-[#29C7C9] flex items-center justify-center text-white text-2xl font-bold border-4 border-[#29C7C9] shadow">
+                  {user.name.charAt(0)}
+                </div>
+              )}
+              {selectedFile && (
+                <div className="absolute -top-2 -right-2 bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs">
+                  ✓
+                </div>
+              )}
+            </div>
+            
+            <div className="text-center">
+              <label htmlFor="profile_picture" className="block text-sm font-medium text-gray-700 mb-2">
+                Profile Picture
+              </label>
+              <input
+                type="file"
+                id="profile_picture"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#29C7C9] file:text-white hover:file:bg-[#22b6b7]"
+              />
+              <p className="text-xs text-gray-500 mt-1">Max 2MB (JPG, PNG, WebP)</p>
+            </div>
+          </div>
+
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
               Name *
@@ -110,7 +183,6 @@ export default function EditProfilePage() {
             />
           </div>
 
-          {/* Username */}
           <div>
             <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-2">
               Username *
@@ -130,7 +202,6 @@ export default function EditProfilePage() {
             <p className="text-xs text-gray-500 mt-1">3-15 characters, lowercase</p>
           </div>
 
-          {/* Bio */}
           <div>
             <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-2">
               Bio
@@ -148,7 +219,6 @@ export default function EditProfilePage() {
             <p className="text-xs text-gray-500 mt-1">{formData.bio.length}/100 characters</p>
           </div>
 
-          {/* Phone */}
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
               Phone Number
@@ -165,7 +235,6 @@ export default function EditProfilePage() {
             />
           </div>
 
-          {/* Location */}
           <div>
             <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
               Location
@@ -182,7 +251,6 @@ export default function EditProfilePage() {
             />
           </div>
 
-          {/* Gender */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Gender
@@ -204,7 +272,6 @@ export default function EditProfilePage() {
             </div>
           </div>
 
-          {/* Submit Buttons */}
           <div className="flex gap-4 pt-4">
             <button
               type="submit"

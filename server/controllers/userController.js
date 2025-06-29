@@ -20,6 +20,61 @@ export const getUserProfile = (req, res) => {
     });
 };
 
+// Update user profile (without profile picture)
+export const updateProfile = async (req, res) => {
+    try {
+        const { name, userName, bio, phone, location, gender } = req.body;
+
+        // Validate required fields
+        if (!name || !userName) {
+            return res.status(400).json({
+                success: false,
+                message: "Name and username are required",
+            });
+        }
+
+        // Check if username is already taken by another user
+        const existingUser = await User.findOne({ 
+            userName: userName.toLowerCase(),
+            _id: { $ne: req.user._id } // Exclude current user
+        });
+        
+        if (existingUser) {
+            return res.status(409).json({
+                success: false,
+                message: "Username is already taken",
+            });
+        }
+
+        // Update user profile
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user._id,
+            {
+                name: name.trim(),
+                userName: userName.toLowerCase().trim(),
+                bio: bio?.trim() || "",
+                phone: phone?.trim() || "",
+                location: location?.trim() || "",
+                gender: gender || req.user.gender,
+            },
+            { new: true, runValidators: true }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Profile updated successfully",
+            user: updatedUser,
+        });
+    } catch (error) {
+        console.error("Profile update error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to update profile",
+            error: error.message,
+        });
+    }
+};
+
 // Controller function
 export const uploadProfilePicture = async (req, res) => {
     try {
