@@ -145,8 +145,8 @@ export const login = async (req, res) => {
         res.status(200)
             .cookie("token", token, {
                 httpOnly: true, // Cookie can't be accessed by JS on the client
-                secure: isProduction, // Only send cookie over HTTPS in production
-                sameSite: isProduction ? "strict" : "lax", // Lax for dev, strict for prod
+                secure: true, // Only send cookie over HTTPS in production
+                sameSite: "none", // Fixing CORS issue by setting sameSite to none
             })
             .json({
                 success: true,
@@ -156,7 +156,7 @@ export const login = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: "Server Error",
+            message: "Server Error in setting cookie",
             error: error.message,
         });
     }
@@ -167,7 +167,8 @@ export const logout = (req, res) => {
     res.cookie("token", "", {
         httpOnly: true,
         expires: new Date(0),
-        sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "none",
+        secure: true,
     }).json({ success: true, message: "Logged out successfully" });
 };
+
