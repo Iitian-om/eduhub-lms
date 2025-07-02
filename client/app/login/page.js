@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useUser } from "../context/UserContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -11,6 +12,7 @@ export default function LoginPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { refetchUser } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,10 +21,18 @@ export default function LoginPage() {
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: "POST",
+        /*
+        * This is important for cookies to be sent to the server.
+        * Without this, the server will not be able to set cookies.
+        * This is because the server is running on a different domain than the client.
+        * So, the server will not be able to set cookies for the client.
+        * So, we need to send the cookies to the server.
+        * And the """credentials: "include",""" is used to send the cookies to the server and should be before headers.
+        */
+        credentials: "include", // Important for cookies
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Important for cookies
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
@@ -30,7 +40,10 @@ export default function LoginPage() {
         throw new Error(data.message || "Invalid credentials");
       }
       toast.success("Login successful!");
-      router.push("/dashboard"); // Redirect user to dashboard after log in.
+      await refetchUser();
+      toast.success("Redirecting to profile...");
+      router.push("/profile");
+       // Redirect user to profile after log in.
     } catch (err) {
       setError(err.message);
       toast.error(err.message);

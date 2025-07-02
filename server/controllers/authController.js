@@ -3,6 +3,8 @@ import express from "express";
 import { User } from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/jwt.js";
+import cloudinary from "cloudinary";
+import streamifier from "streamifier";
 
 // Register a new user
 export const register = async (req, res) => {
@@ -42,8 +44,21 @@ export const register = async (req, res) => {
         // Handle profilePic upload
         let profile_picture = "";
         if (req.file) {
-            console.log("Profile picture uploaded successfully: ", req.file);
-            profile_picture = req.file.path; // Use Cloudinary URL directly
+            // Upload buffer to Cloudinary
+            const streamUpload = (buffer) => {
+                return new Promise((resolve, reject) => {
+                    const stream = cloudinary.v2.uploader.upload_stream(
+                        { folder: "eduhub/profilePics" },
+                        (error, result) => {
+                            if (result) resolve(result);
+                            else reject(error);
+                        }
+                    );
+                    streamifier.createReadStream(buffer).pipe(stream);
+                });
+            };
+            const result = await streamUpload(req.file.buffer);
+            profile_picture = result.secure_url; // Use Cloudinary URL directly
         }
 
         // Capitalize first letter

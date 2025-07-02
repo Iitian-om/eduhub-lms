@@ -4,6 +4,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useUser } from "../context/UserContext";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -15,6 +16,7 @@ export default function RegisterPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { refetchUser } = useUser();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,6 +58,7 @@ export default function RegisterPage() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
         method: "POST",
         body: formData,
+        credentials: 'include',
       });
 
       const data = await res.json();
@@ -65,7 +68,8 @@ export default function RegisterPage() {
       }
 
       toast.success("Account created in DB successfully!");
-      router.push("/login");
+      await refetchUser();
+      router.push("/profile");
     } catch (err) {
       setError(err.message);
     } finally {

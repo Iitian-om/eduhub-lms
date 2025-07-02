@@ -27,7 +27,7 @@ const Header = () => {
           <Image
             src="/eduhub-logo.png"
             alt="EduHub Logo-bg removed"
-            width={150}
+            width={100}
             height={75}
             style={{ width: 'auto', height: 'auto' }}
             priority
