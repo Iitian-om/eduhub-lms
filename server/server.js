@@ -12,6 +12,9 @@ import { connectDB } from "./utils/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
+import bookRoutes from "./routes/bookRoutes.js";
+import noteRoutes from "./routes/noteRoutes.js";
+import researchPaperRoutes from "./routes/researchPaperRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import otherRoutes from "./routes/otherRoutes.js"; // General routes like root and /about or pages route.
 import pageNotFound from "./routes/pageNotFound.js"; // Middleware to handle 404 errors
@@ -55,6 +58,9 @@ app.use(cors(corsOptions));
 app.use("/api/v1/auth", authRoutes); // Auth routes (register, login)
 app.use("/api/v1/users", userRoutes); // User profile and related routes
 app.use("/api/v1/courses", courseRoutes); // Course-related routes
+app.use("/api/v1/books", bookRoutes); // Book-related routes
+app.use("/api/v1/notes", noteRoutes); // Note-related routes
+app.use("/api/v1/research-papers", researchPaperRoutes); // Research paper routes
 app.use("/api/v1/payment", paymentRoutes); // Payment routes
 app.use("/", otherRoutes); // General routes like root and /about
 

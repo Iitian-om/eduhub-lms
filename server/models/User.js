@@ -63,6 +63,39 @@ const userSchema = new mongoose.Schema({ // Schema is a blueprint for the struct
         default: [], // Can be empty if instructor has not created any courses. If user it wil be null array
     },
     
+    // Array of book IDs the user has uploaded
+    Books_Uploaded: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Book",
+            },
+        ],
+        default: [],
+    },
+    
+    // Array of note IDs the user has uploaded
+    Notes_Uploaded: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Note",
+            },
+        ],
+        default: [],
+    },
+    
+    // Array of research paper IDs the user has uploaded
+    ResearchPapers_Uploaded: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "ResearchPaper",
+            },
+        ],
+        default: [],
+    },
+    
     // Gender: 'Male' or 'Female' (required)
     gender: {
         type: String,
