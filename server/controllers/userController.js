@@ -6,6 +6,7 @@
 import multer from "multer"; // Multer config (in a separate file or here)
 import cloudinary from "../utils/cloudinary.js";
 import { User } from "../models/User.js";
+import streamifier from "streamifier";
 
 const storage = multer.memoryStorage();  // Store files in memory as buffers
 export const upload = multer({ storage });
@@ -78,33 +79,58 @@ export const updateProfile = async (req, res) => {
 // Controller function
 export const uploadProfilePicture = async (req, res) => {
     try {
-        // // Upload to Cloudinary
-        // const result = await cloudinary.uploader.upload_stream(
-        //     { folder: "eduhub/profiles" },
+        // Check if file was uploaded
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "No profile picture uploaded"
+            });
+        }
 
-        //     async (error, result) => {
+        // Ensure Cloudinary is configured
+        if (!cloudinary.config().cloud_name) {
+            return res.status(500).json({
+                success: false,
+                message: "Cloudinary is not configured properly"
+            });
+        }
 
-        //         if (error) return res.status(500).json({ error: error.message });
-        //         // Update user with Cloudinary URL
-        //         const user = await User.findByIdAndUpdate(
-        //             req.user.id,
-        //             { profile_picture: result.secure_url },
-        //             { new: true }
-        //         );
-        //         res.json({ profile_picture: user.profile_picture });
+        // Upload buffer to Cloudinary using streamifier
+        const streamUpload = (buffer) => {
+            return new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream(
+                    { folder: "eduhub/profilePics" },
+                    (error, result) => {
+                        if (result) resolve(result);
+                        else reject(error);
+                    }
+                );
+                streamifier.createReadStream(buffer).pipe(stream);
+            });
+        };
 
-        //     }
-        // );
-        // // Pipe file buffer to Cloudinary
-        // req.file.stream.pipe(result);
-        // req.file.path is the Cloudinary URL provided by multer-storage-cloudinary
+        const result = await streamUpload(req.file.buffer);
+        const profile_picture = result.secure_url;
+
+        // Update user with new profile picture URL
         const user = await User.findByIdAndUpdate(
-            req.user.id,
-            { profile_picture: req.file.path },
+            req.user._id,
+            { profile_picture },
             { new: true }
         );
-        res.json({ profile_picture: user.profile_picture });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+
+        res.status(200).json({
+            success: true,
+            message: "Profile picture updated successfully",
+            profile_picture: user.profile_picture,
+            user
+        });
+    } catch (error) {
+        console.error("Profile picture upload error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to upload profile picture",
+            error: error.message
+        });
     }
 };
