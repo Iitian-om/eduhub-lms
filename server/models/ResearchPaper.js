@@ -22,23 +22,23 @@ const researchPaperSchema = new mongoose.Schema({
     }],
     field: {
         type: String,
-        required: [true, "Please select research field"],
+        required: [true, "Please select an research field"],
         enum: [
-            "Computer Science",
             "Artificial Intelligence",
-            "Machine Learning",
-            "Data Science",
-            "Mathematics",
-            "Physics",
-            "Chemistry",
             "Biology",
-            "Engineering",
-            "Medicine",
-            "Psychology",
-            "Economics",
             "Business",
-            "Social Sciences",
+            "Chemistry",
+            "Computer Science",
+            "Data Science",
+            "Economics",
+            "Engineering",
             "Humanities",
+            "Machine Learning",
+            "Mathematics",
+            "Medicine",
+            "Physics",
+            "Psychology",
+            "Social Sciences",
             "Other"
         ],
     },
@@ -76,9 +76,10 @@ const researchPaperSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    fileType: {
+    // Markdown content for rich description
+    markdownContent: {
         type: String,
-        default: "application/pdf",
+        default: "",
     },
     uploadedBy: {
         type: mongoose.Schema.Types.ObjectId,

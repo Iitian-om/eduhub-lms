@@ -4,7 +4,7 @@ import { uploadToCloudinary } from "../middlewares/fileUpload.js";
 // Create a new note
 export const createNote = async (req, res) => {
     try {
-        const { title, description, type, subject, course, tags } = req.body;
+        const { title, description, type, subject, course, tags, markdownContent, richTextContent, contentType } = req.body;
 
         // Validate required fields
         if (!title || !description || !type || !subject) {
@@ -14,16 +14,34 @@ export const createNote = async (req, res) => {
             });
         }
 
-        // Check if file was uploaded
-        if (!req.file) {
+        // Validate content type
+        if (contentType && !["file", "manual", "both"].includes(contentType)) {
             return res.status(400).json({
                 success: false,
-                message: "Note file is required"
+                message: "Content type must be 'file', 'manual', or 'both'"
             });
         }
 
-        // Upload file to Cloudinary
-        const result = await uploadToCloudinary(req.file, "eduhub/notes");
+        // Check if file is required based on content type
+        const finalContentType = contentType || "file";
+        if ((finalContentType === "file" || finalContentType === "both") && !req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "Note file is required for file-based content"
+            });
+        }
+
+        let fileUrl = "";
+        let fileSize = 0;
+        let fileName = "";
+
+        // Upload file to Cloudinary if needed
+        if (req.file) {
+            const result = await uploadToCloudinary(req.file, "eduhub/notes");
+            fileUrl = result.secure_url;
+            fileSize = req.file.size;
+            fileName = req.file.originalname;
+        }
         
         // Create note in database
         const note = await Note.create({
@@ -32,9 +50,12 @@ export const createNote = async (req, res) => {
             type,
             subject: subject.trim(),
             course: course || null,
-            fileUrl: result.secure_url,
-            fileSize: req.file.size,
-            fileName: req.file.originalname,
+            fileUrl,
+            fileSize,
+            fileName,
+            markdownContent: markdownContent || "",
+            richTextContent: richTextContent || "",
+            contentType: finalContentType,
             uploadedBy: req.user._id,
             tags: tags ? tags.split(',').map(tag => tag.trim()) : []
         });
@@ -172,7 +193,7 @@ export const getNoteById = async (req, res) => {
 export const updateNote = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, type, subject, course, tags, isPublic } = req.body;
+        const { title, description, type, subject, course, tags, isPublic, markdownContent, richTextContent, contentType } = req.body;
 
         const note = await Note.findById(id);
 
@@ -191,6 +212,14 @@ export const updateNote = async (req, res) => {
             });
         }
 
+        // Validate content type if provided
+        if (contentType && !["file", "manual", "both"].includes(contentType)) {
+            return res.status(400).json({
+                success: false,
+                message: "Content type must be 'file', 'manual', or 'both'"
+            });
+        }
+
         // Update fields
         const updateData = {};
         if (title) updateData.title = title.trim();
@@ -200,6 +229,9 @@ export const updateNote = async (req, res) => {
         if (course) updateData.course = course;
         if (tags) updateData.tags = tags.split(',').map(tag => tag.trim());
         if (typeof isPublic === 'boolean') updateData.isPublic = isPublic;
+        if (markdownContent !== undefined) updateData.markdownContent = markdownContent;
+        if (richTextContent !== undefined) updateData.richTextContent = richTextContent;
+        if (contentType) updateData.contentType = contentType;
 
         const updatedNote = await Note.findByIdAndUpdate(
             id,

@@ -13,7 +13,8 @@ export const createResearchPaper = async (req, res) => {
             publicationYear, 
             journal, 
             doi,
-            isPeerReviewed 
+            isPeerReviewed,
+            markdownContent
         } = req.body;
 
         // Validate required fields
@@ -52,6 +53,7 @@ export const createResearchPaper = async (req, res) => {
             fileUrl: result.secure_url,
             fileSize: req.file.size,
             fileName: req.file.originalname,
+            markdownContent: markdownContent || "",
             uploadedBy: req.user._id,
             isPeerReviewed: isPeerReviewed === 'true'
         });

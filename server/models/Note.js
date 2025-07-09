@@ -44,9 +44,23 @@ const noteSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    fileType: {
+    // Markdown content for rich description
+    markdownContent: {
         type: String,
-        default: "application/pdf",
+        default: "",
+    },
+    
+    // Rich text content for manual note writing
+    richTextContent: {
+        type: String,
+        default: "",
+    },
+    
+    // Type of note content (file upload or manual writing)
+    contentType: {
+        type: String,
+        enum: ["file", "manual", "both"],
+        default: "file",
     },
     uploadedBy: {
         type: mongoose.Schema.Types.ObjectId,

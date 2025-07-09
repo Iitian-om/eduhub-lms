@@ -24,10 +24,10 @@ const upload = multer({
     }
 });
 
-// Specific upload middleware for books (3MB limit)
+// Specific upload middleware for books (3MB limit) - file required
 export const uploadBook = upload.single('bookFile');
 
-// Specific upload middleware for notes and research papers (2MB limit)
+// Specific upload middleware for notes (2MB limit) - file optional
 export const uploadNote = multer({
     storage: storage,
     fileFilter: fileFilter,
@@ -36,6 +36,7 @@ export const uploadNote = multer({
     }
 }).single('noteFile');
 
+// Specific upload middleware for research papers (2MB limit) - file required
 export const uploadResearchPaper = multer({
     storage: storage,
     fileFilter: fileFilter,

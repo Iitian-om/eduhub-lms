@@ -4,7 +4,7 @@ import { uploadToCloudinary } from "../middlewares/fileUpload.js";
 // Create a new book
 export const createBook = async (req, res) => {
     try {
-        const { title, description, author, category, level, tags } = req.body;
+        const { title, description, author, category, level, tags, markdownContent } = req.body;
 
         // Validate required fields
         if (!title || !description || !author || !category || !level) {
@@ -35,6 +35,7 @@ export const createBook = async (req, res) => {
             fileUrl: result.secure_url,
             fileSize: req.file.size,
             fileName: req.file.originalname,
+            markdownContent: markdownContent || "",
             uploadedBy: req.user._id,
             tags: tags ? tags.split(',').map(tag => tag.trim()) : []
         });
@@ -167,7 +168,7 @@ export const getBookById = async (req, res) => {
 export const updateBook = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, author, category, level, tags, isPublic } = req.body;
+        const { title, description, author, category, level, tags, isPublic, markdownContent } = req.body;
 
         const book = await Book.findById(id);
 
@@ -195,6 +196,7 @@ export const updateBook = async (req, res) => {
         if (level) updateData.level = level;
         if (tags) updateData.tags = tags.split(',').map(tag => tag.trim());
         if (typeof isPublic === 'boolean') updateData.isPublic = isPublic;
+        if (markdownContent !== undefined) updateData.markdownContent = markdownContent;
 
         const updatedBook = await Book.findByIdAndUpdate(
             id,

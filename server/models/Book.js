@@ -58,9 +58,10 @@ const bookSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    fileType: {
+    // Markdown content for rich description
+    markdownContent: {
         type: String,
-        default: "application/pdf",
+        default: "",
     },
     uploadedBy: {
         type: mongoose.Schema.Types.ObjectId,
