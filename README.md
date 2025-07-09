@@ -84,82 +84,18 @@ See [Project Phases](#project-phases) below for details.
 
 ## 🛠️ Getting Started
 
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/Iitian-om/eduhub-lms.git
-cd eduhub-lms
-```
-
-### 2. Install Dependencies
-
-#### Frontend
-
-```bash
-cd client
-npm install
-```
-
-#### Backend
-
-```bash
-cd ../server
-npm install
-```
-
-### 3. Environment Setup
-
-Create `.env.local` in both `client/` and `server/`:
-
-#### `/server/.env.local`
-```
-MONGODB_URI=mongodb+srv://<your-cluster-url>
-JWT_SECRET=your_secret_key
-PORT=5000
-```
-
-#### `/client/.env.local`
-```
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
-```
-
-> _Ensure MongoDB is running locally or use MongoDB Atlas._
-
----
-
-### 4. Run the App
-
-**Backend**  
-```bash
-cd server
-npm run dev
-```
-
-**Frontend**  
-_Open a new terminal:_
-```bash
-cd client
-npm run dev
-```
-
 Open [http://localhost:3000](http://localhost:3000) in your browser.
-
----
-
-## 🧪 Seeding & Testing
-
-- _You may create a `seed.js` file in `server/scripts/` to pre-populate users, courses, etc._
-- Use Postman or Thunder Client to test API endpoints.
+Open [main Website](https://eduhub-lms-rose.vercel.app/) This is the main website.
+Open [Server](https://eduhub-crit.onrender.com) This is the main website.
 
 ---
 
 ## 🌐 Deployment
 
-- **Frontend**: [Vercel](https://vercel.com/), [Netlify](https://www.netlify.com/)
-- **Backend**: [Render](https://render.com/), [Railway](https://railway.app/), [Heroku](https://heroku.com/)
+- **Frontend**: [Vercel](https://vercel.com/) [Frontend](https://eduhub-lms-rose.vercel.app/)
+- **Backend**: [Render](https://render.com/) [Server](https://eduhub-crit.onrender.com/) 
 - **Database**: [MongoDB Atlas](https://www.mongodb.com/atlas)
-
-Use separate `.env.production` files and configure CORS and secure tokens for production.
+- **Cloud**: [Cloudinary](https://cloudinary.com/) for images uploading and storing.
 
 ---
 
@@ -168,18 +104,6 @@ Use separate `.env.production` files and configure CORS and secure tokens for pr
 - **Primary Color**: Aqua Blue `#2AC9C7`
 - **UI Kit**: Tailwind CSS, fully responsive and accessible
 - **Logo**: See `eduhub-logo.png` in root
-
----
-
-## 👥 Contributing
-
-1. Fork this repository
-2. Create your feature branch: `git checkout -b your-feature`
-3. Commit your changes: `git commit -m 'Add feature'`
-4. Push to the branch: `git push origin your-feature`
-5. Open a Pull Request
-
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for code standards and process.
 
 ---
 
