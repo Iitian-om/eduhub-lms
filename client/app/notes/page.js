@@ -1,3 +1,4 @@
+"use client";
 // pages/notes/page.js
 // This page lists all notes from the backend API
 // Author: EduHub LMS

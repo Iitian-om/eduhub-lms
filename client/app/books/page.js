@@ -1,3 +1,4 @@
+"use client";
 // pages/books/page.js
 // This page lists all books from the backend API
 // Author: EduHub LMS

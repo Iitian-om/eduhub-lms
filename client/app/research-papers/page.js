@@ -1,3 +1,4 @@
+"use client";
 // pages/research-papers/page.js
 // This page lists all research papers from the backend API
 
