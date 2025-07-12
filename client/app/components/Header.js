@@ -8,8 +8,12 @@ import { useUser } from "../context/UserContext";
 const navLinks = [
   { href: "/about", label: "About" },
   { href: "/courses", label: "Courses" },
+  { href: "/books", label: "Books" },
+  { href: "/notes", label: "Notes" },
+  { href: "/research-papers", label: "Research" },
+  { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" },
-  { href: "/dashboard", label: "Dashboard" },
+  { href: "/donate", label: "Donate" },
 ];
 
 const Header = () => {
@@ -23,7 +27,6 @@ const Header = () => {
 
         {/* Link for Logo + HomePage */}
         <Link href="/" className="flex items-center gap-2">
-
           <Image
             src="/eduhub-logo.png"
             alt="EduHub Logo-bg removed"
@@ -32,11 +35,10 @@ const Header = () => {
             style={{ width: 'auto', height: 'auto' }}
             priority
           />
-
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex space-x-8 text-lg">
+        <nav className="hidden md:flex space-x-6 text-lg">
           {
             // Mapping through navLinks to create desktop links
             navLinks.map((link) => (
@@ -51,18 +53,25 @@ const Header = () => {
               </Link>
             ))
           }
-
         </nav>
 
         {/* User Profile / Login/Register Buttons */}
         <div className="hidden md:flex space-x-4">
           {loading ? null : user ? (
-            <Link
-              href="/profile"
-              className="bg-[#29C7C9] text-white px-4 py-2 rounded hover:bg-[#22b3b5] font-semibold transition"
-            >
-              {user.name}
-            </Link>
+            <>
+              <Link
+                href="/dashboard"
+                className="bg-white border border-[#29C7C9] text-[#29C7C9] px-4 py-2 rounded hover:bg-[#e0f7f7] transition"
+              >
+                Dashboard
+              </Link>
+              <Link
+                href="/profile"
+                className="bg-[#29C7C9] text-white px-4 py-2 rounded hover:bg-[#22b3b5] font-semibold transition"
+              >
+                {user.name}
+              </Link>
+            </>
           ) : (
             <>
               <Link
@@ -126,14 +135,23 @@ const Header = () => {
             {
               // Conditional rendering based on loading and user state
               loading ? null : user ? (
-                // Link to Profile if logged in
-                <Link
-                  href="/profile"
-                  className="bg-[#29C7C9] text-white px-4 py-2 rounded hover:bg-[#22b3b5] font-semibold transition"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {user.name}
-                </Link>
+                // Links for logged in users
+                <>
+                  <Link
+                    href="/dashboard"
+                    className="bg-white border border-[#29C7C9] text-[#29C7C9] px-4 py-2 rounded hover:bg-[#e0f7f7] transition"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/profile"
+                    className="bg-[#29C7C9] text-white px-4 py-2 rounded hover:bg-[#22b3b5] font-semibold transition"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {user.name}
+                  </Link>
+                </>
               ) : (
                 // Buttons for getting started if not logged in
                 <>
@@ -145,7 +163,7 @@ const Header = () => {
                   >
                     Login
                   </Link>
-                  {/* Register Link Butoon */}
+                  {/* Register Link Button */}
                   <Link
                     href="/register"
                     className="bg-white border border-[#29C7C9] text-[#29C7C9] px-4 py-2 rounded hover:bg-[#e0f7f7] transition"

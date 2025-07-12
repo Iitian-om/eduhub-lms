@@ -5,6 +5,19 @@ const UserContext = createContext();
 
 export const useUser = () => useContext(UserContext);
 
+// API configuration
+const getApiUrl = () => {
+  // Check if we're in production (Vercel)
+  if (typeof window !== 'undefined' && window.location.hostname === 'eduhub-lms-rose.vercel.app') {
+    return 'https://eduhub-crit.onrender.com';
+  }
+  
+  // Development
+  return 'http://localhost:5000';
+};
+
+const API_BASE_URL = getApiUrl();
+
 export const UserProvider = ({ children }) => {
   
   const [user, setUser] = useState(null);
@@ -14,7 +27,7 @@ export const UserProvider = ({ children }) => {
   const refetchUser = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/profile`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/users/profile`, {
         credentials: "include",
       });
       if (res.ok) {

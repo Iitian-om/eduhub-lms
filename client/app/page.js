@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -9,9 +10,11 @@ export default function Home() {
         <p className="text-lg md:text-xl text-gray-700 mb-8">
           A modern, user-friendly learning management system for students, instructors, and administrators.
         </p>
-        <a href="/register" className="inline-block bg-[#29C7C9] text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-[#22b6b7] transition mb-2">Get Started</a>
-        <a href="/about" className="inline-block text-[#29C7C9] hover:underline mt-2">Learn more about EduHub</a>
-        </div>
-      </main>
+        <Link href="/courses" className="inline-block bg-[#29C7C9] text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-[#22b6b7] transition mb-2">
+          Get Started
+        </Link>
+        <Link href="/about" className="inline-block text-[#29C7C9] hover:underline mt-2">Learn more about EduHub</Link>
+      </div>
+    </main>
   );
 }

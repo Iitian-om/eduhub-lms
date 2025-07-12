@@ -99,7 +99,7 @@ const userSchema = new mongoose.Schema({ // Schema is a blueprint for the struct
     // Gender: 'Male' or 'Female' (required)
     gender: {
         type: String,
-        enum: ["Male", "Female", "Transgender", "Prefer not to say"],
+        enum: ["Male", "Female", "Transgender"],
         default: "Prefer not to say", // Default value if not specified
         required: true,
     },
