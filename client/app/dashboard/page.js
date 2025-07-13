@@ -69,14 +69,23 @@ export default function DashboardPage() {
             <Link href="/profile" className="bg-white border border-[#29C7C9] text-[#29C7C9] px-4 py-2 rounded shadow hover:bg-[#e0f7f7] transition">
               View Profile
             </Link>
+            {(user.role === "Admin" || user.role === "Instructor") && (
+              <Link href="/create-course" className="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 transition">
+                Create Course
+              </Link>
+            )}
           </div>
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-white shadow rounded-xl p-4">
             <h2 className="text-xl font-semibold text-sky-700">🎓 Enrolled Courses</h2>
             <p className="text-2xl mt-2 font-bold text-gray-800">{enrolledCourses.length}</p>
+          </div>
+          <div className="bg-white shadow rounded-xl p-4">
+            <h2 className="text-xl font-semibold text-green-600">✅ Completed Courses</h2>
+            <p className="text-2xl mt-2 font-bold text-gray-800">{user.Courses_Completed?.length || 0}</p>
           </div>
           <div className="bg-white shadow rounded-xl p-4">
             <h2 className="text-xl font-semibold text-sky-700">📄 Pending Assignments</h2>
@@ -172,9 +181,12 @@ export default function DashboardPage() {
                     </div>
                     
                     <div className="mt-4">
-                      <button className="w-full bg-[#29C7C9] text-white py-2 rounded-lg font-medium hover:bg-[#22b3b5] transition">
+                      <Link
+                        href={`/coursePage/${course._id}`}
+                        className="w-full bg-[#29C7C9] text-white py-2 rounded-lg font-medium hover:bg-[#22b3b5] transition block text-center"
+                      >
                         Continue Learning
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </div>

@@ -38,6 +38,29 @@ const courseSchema = new mongoose.Schema({
             videoUrl: String,
         },
     ],
+    enrolledStudents: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }],
+    modules: [
+        {
+            title: String,
+            description: String,
+            lessons: [
+                {
+                    title: String,
+                    description: String,
+                    content: String,
+                    videoUrl: String,
+                    duration: Number, // in minutes
+                    isCompleted: {
+                        type: Boolean,
+                        default: false
+                    }
+                }
+            ]
+        }
+    ],
     createdAt: {
         type: Date,
         default: Date.now,

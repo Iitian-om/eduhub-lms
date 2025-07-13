@@ -52,6 +52,29 @@ const userSchema = new mongoose.Schema({ // Schema is a blueprint for the struct
         default: [],
     },
 
+    // Array of completed course IDs
+    Courses_Completed: {
+        type: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Course",
+            },
+        ],
+        default: [],
+    },
+
+    // Course completion progress tracking
+    CourseProgress: {
+        type: Map,
+        of: {
+            completedLessons: [String], // Array of lesson IDs that are completed
+            totalLessons: Number,
+            completionPercentage: Number,
+            lastAccessed: Date,
+        },
+        default: new Map(),
+    },
+
     // Array of course IDs the user has created (for admin/instructor only)
     Courses_Created: {
         type: [
@@ -106,6 +129,13 @@ const userSchema = new mongoose.Schema({ // Schema is a blueprint for the struct
     
     // User bio/intro (max 100 chars)
     bio: {
+        type: String,
+        maxlength: 100,
+        default: "",
+    },
+    
+    // User location
+    location: {
         type: String,
         maxlength: 100,
         default: "",

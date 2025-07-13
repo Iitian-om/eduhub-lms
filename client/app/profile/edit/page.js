@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { API_BASE_URL } from "../../utils/api";
 
 export default function EditProfilePage() {
   const { user, setUser, loading } = useUser();
@@ -62,7 +63,7 @@ export default function EditProfilePage() {
     formData.append("profile_picture", selectedFile);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/profile/upload`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/users/profile/upload`, {
         method: "POST",
         credentials: "include",
         body: formData,
@@ -92,7 +93,7 @@ export default function EditProfilePage() {
         profilePicture = await uploadProfilePicture();
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/profile`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/users/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

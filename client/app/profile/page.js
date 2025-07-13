@@ -89,6 +89,9 @@ export default function ProfilePage() {
           </div>
           <span className="inline-block bg-[#E6F7F8] text-[#29C7C9] px-3 py-1 rounded-full text-xs font-semibold mt-1 mb-1 capitalize w-fit">{user.role}</span>
           <span className="text-gray-700 text-sm mb-1">{user.email}</span>
+          {user.location && (
+            <span className="text-gray-700 text-sm mb-1">📍 {user.location}</span>
+          )}
           <p className="text-gray-600 text-sm mb-2 max-w-xl break-words">{user.bio || <span className="italic text-gray-400">No bio provided.</span>}</p>
           <div className="flex flex-wrap gap-3 mt-2">
             <Link href="/profile/edit" className="bg-[#29C7C9] text-white px-5 py-2 rounded-lg font-semibold hover:bg-[#22b6b7] transition">
@@ -107,7 +110,12 @@ export default function ProfilePage() {
 
       {/* Bottom Enrolled Courses Div */}
       <div className="w-full max-w-5xl bg-white rounded-2xl shadow p-8 mt-2">
-        <h3 className="text-xl font-bold text-[#29C7C9] mb-4">Enrolled Courses ({enrolledCourses.length})</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-bold text-[#29C7C9]">Enrolled Courses ({enrolledCourses.length})</h3>
+          <div className="text-sm text-gray-600">
+            Completed: {user.Courses_Completed?.length || 0}
+          </div>
+        </div>
         {coursesLoading ? (
           // Loading animation while loading the coureses
           <div className="text-center py-8">
@@ -121,7 +129,12 @@ export default function ProfilePage() {
               <div key={course._id} className="bg-[#E6F7F8] rounded-lg p-4 shadow flex flex-col">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-semibold text-[#22292F] text-lg">{course.title}</span>
-                  <span className="text-xs bg-green-500 text-white px-2 py-1 rounded">Enrolled</span>
+                  <div className="flex gap-1">
+                    <span className="text-xs bg-green-500 text-white px-2 py-1 rounded">Enrolled</span>
+                    {user.Courses_Completed?.includes(course._id) && (
+                      <span className="text-xs bg-yellow-500 text-white px-2 py-1 rounded">Completed</span>
+                    )}
+                  </div>
                 </div>
                 <p className="text-gray-600 text-sm mb-2 line-clamp-2">{course.description}</p>
                 <div className="flex items-center justify-between text-xs text-gray-500">
@@ -133,7 +146,10 @@ export default function ProfilePage() {
                   <span>Category: {course.category}</span>
                 </div>
                 <div className="mt-3">
-                  <button className="w-full bg-[#29C7C9] text-white py-2 rounded-lg font-medium hover:bg-[#22b3b5] transition text-sm">
+                  <button 
+                    onClick={() => router.push(`/coursePage/${course._id}`)}
+                    className="w-full bg-[#29C7C9] text-white py-2 rounded-lg font-medium hover:bg-[#22b3b5] transition text-sm"
+                  >
                     Continue Learning
                   </button>
                 </div>
