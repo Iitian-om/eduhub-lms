@@ -8,10 +8,10 @@ import { useUser } from "../context/UserContext";
 const navLinks = [
   { href: "/about", label: "About" },
   { href: "/courses", label: "Courses" },
+  { href: "/search-courses", label: "Search Courses" },
   { href: "/books", label: "Books" },
   { href: "/notes", label: "Notes" },
   { href: "/research-papers", label: "Research" },
-  { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" },
   { href: "/donate", label: "Donate" },
 ];

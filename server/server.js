@@ -16,6 +16,7 @@ import bookRoutes from "./routes/bookRoutes.js";
 import noteRoutes from "./routes/noteRoutes.js";
 import researchPaperRoutes from "./routes/researchPaperRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import searchRoutes from "./routes/searchRoutes.js"; // Search routes for external courses
 import otherRoutes from "./routes/otherRoutes.js"; // General routes like root and /about or pages route.
 import pageNotFound from "./routes/pageNotFound.js"; // Middleware to handle 404 errors
 
@@ -62,6 +63,7 @@ app.use("/api/v1/books", bookRoutes); // Book-related routes
 app.use("/api/v1/notes", noteRoutes); // Note-related routes
 app.use("/api/v1/research-papers", researchPaperRoutes); // Research paper routes
 app.use("/api/v1/payment", paymentRoutes); // Payment routes
+app.use("/api/v1/search", searchRoutes); // Search routes for external courses
 app.use("/", otherRoutes); // General routes like root and /about
 
 // --- Page Not Found Middleware --- This must be the last app.use() call for it to work correctly
