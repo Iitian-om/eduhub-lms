@@ -14,7 +14,7 @@ export default function Home() {
           Get Started
         </Link>
         <Link href="/about" className="inline-block text-[#29C7C9] hover:underline mt-2">Learn more about EduHub</Link>
-      </div>
-    </main>
+        </div>
+      </main>
   );
 }
