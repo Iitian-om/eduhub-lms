@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { UserContext } from "../../context/UserContext";
+import UserContext from '../../context/UserContext'; // ✅ Correct for your file!
 import { useContext } from "react";
 import AdminSidebar from "../../components/AdminSidebar";
 import { 
