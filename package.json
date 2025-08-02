@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@tiptap/pm": "^2.24.2",
+    "@tiptap/react": "^2.24.2",
+    "@tiptap/starter-kit": "^2.24.2",
+    "@uiw/react-md-editor": "^4.0.7",
+    "react-markdown": "^10.1.0"
+  }
+}
