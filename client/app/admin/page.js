@@ -2,14 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { UserContext } from "../context/UserContext";
-import { useContext } from "react";
+import { useUser } from "../context/UserContext"; // ✅ using the custom hook
 import AdminSidebar from "../components/AdminSidebar";
 import AdminStats from "../components/AdminStats";
 import AdminRecentActivity from "../components/AdminRecentActivity";
 
+// ✅ force dynamic rendering to avoid Vercel prerender errors
+export const dynamic = "force-dynamic";
+
 export default function AdminDashboard() {
-  const { user } = useContext(UserContext);
+  const { user } = useUser(); // ✅ cleaner than useContext(UserContext)
   const router = useRouter();
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -17,7 +19,7 @@ export default function AdminDashboard() {
     totalInstructors: 0,
     totalContent: 0,
     recentUsers: [],
-    recentCourses: []
+    recentCourses: [],
   });
   const [loading, setLoading] = useState(true);
 
@@ -34,9 +36,9 @@ export default function AdminDashboard() {
   const fetchAdminStats = async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/stats`, {
-        credentials: "include"
+        credentials: "include",
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setStats(data);
@@ -62,24 +64,18 @@ export default function AdminDashboard() {
       <div className="ml-64 p-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600 mt-2">Welcome back, {user?.name}! Here's what's happening on EduHub.</p>
+          <p className="text-gray-600 mt-2">
+            Welcome back, {user?.name}! Here's what's happening on EduHub.
+          </p>
         </div>
 
         <AdminStats stats={stats} />
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-          <AdminRecentActivity 
-            title="Recent Users" 
-            data={stats.recentUsers} 
-            type="users" 
-          />
-          <AdminRecentActivity 
-            title="Recent Courses" 
-            data={stats.recentCourses} 
-            type="courses" 
-          />
+          <AdminRecentActivity title="Recent Users" data={stats.recentUsers} type="users" />
+          <AdminRecentActivity title="Recent Courses" data={stats.recentCourses} type="courses" />
         </div>
       </div>
     </div>
   );
-} 
+}
