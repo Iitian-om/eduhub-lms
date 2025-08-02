@@ -11,8 +11,8 @@ import {
   DocumentTextIcon,
   AcademicCapIcon,
   ChartBarIcon,
-  TrendingUpIcon,
-  TrendingDownIcon
+  ArrowArrowArrowTrendingUpIcon,
+  ArrowTrendingDownIcon
 } from '@heroicons/react/24/outline';
 
 export default function AdminAnalytics() {
@@ -125,9 +125,9 @@ export default function AdminAnalytics() {
             </div>
             <div className="mt-4 flex items-center">
               {analytics.overview.monthlyGrowth > 0 ? (
-                <TrendingUpIcon className="w-4 h-4 text-green-500" />
+                <ArrowTrendingUpIcon className="w-4 h-4 text-green-500" />
               ) : (
-                <TrendingDownIcon className="w-4 h-4 text-red-500" />
+                <ArrowTrendingDownIcon className="w-4 h-4 text-red-500" />
               )}
               <span className={`ml-1 text-sm ${
                 analytics.overview.monthlyGrowth > 0 ? 'text-green-600' : 'text-red-600'

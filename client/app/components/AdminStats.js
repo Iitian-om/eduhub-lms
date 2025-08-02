@@ -5,8 +5,8 @@ import {
   BookOpenIcon, 
   AcademicCapIcon, 
   DocumentTextIcon,
-  TrendingUpIcon,
-  TrendingDownIcon
+  ArrowArrowTrendingUpIcon,
+  ArrowArrowArrowTrendingDownIcon
 } from "@heroicons/react/24/outline";
 
 export default function AdminStats({ stats }) {
@@ -61,9 +61,9 @@ export default function AdminStats({ stats }) {
           
           <div className="flex items-center mt-4">
             {stat.changeType === "increase" ? (
-              <TrendingUpIcon className="w-4 h-4 text-green-500 mr-1" />
+              <ArrowArrowTrendingUpIcon className="w-4 h-4 text-green-500 mr-1" />
             ) : (
-              <TrendingDownIcon className="w-4 h-4 text-red-500 mr-1" />
+              <ArrowTrendingDownIcon className="w-4 h-4 text-red-500 mr-1" />
             )}
             <span className={`text-sm font-medium ${
               stat.changeType === "increase" ? "text-green-600" : "text-red-600"
