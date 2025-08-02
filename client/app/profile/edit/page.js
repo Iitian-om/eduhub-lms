@@ -1,11 +1,13 @@
 "use client";
 
-import UserContext from '../../context/UserContext'; // ✅ Correct for your file!
+import { useUser } from '../../context/UserContext'; // ✅ Correct hook import
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { API_BASE_URL } from "../../utils/api";
+
+export const dynamic = "force-dynamic"; // ✅ Fix Vercel build crash
 
 export default function EditProfilePage() {
   const { user, setUser, loading } = useUser();
