@@ -6,7 +6,9 @@ import {
   AcademicCapIcon, 
   DocumentTextIcon,
   ArrowArrowTrendingUpIcon,
-  ArrowArrowArrowTrendingDownIcon
+  ArrowArrowArrowTrendingDownIcon,
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon
 } from "@heroicons/react/24/outline";
 
 export default function AdminStats({ stats }) {
@@ -61,7 +63,7 @@ export default function AdminStats({ stats }) {
           
           <div className="flex items-center mt-4">
             {stat.changeType === "increase" ? (
-              <ArrowArrowTrendingUpIcon className="w-4 h-4 text-green-500 mr-1" />
+              <ArrowTrendingUpIcon className="w-4 h-4 text-green-500 mr-1" />
             ) : (
               <ArrowTrendingDownIcon className="w-4 h-4 text-red-500 mr-1" />
             )}
@@ -76,4 +78,4 @@ export default function AdminStats({ stats }) {
       ))}
     </div>
   );
-} 
+}
