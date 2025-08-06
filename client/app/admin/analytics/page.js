@@ -11,7 +11,7 @@ import {
   DocumentTextIcon,
   AcademicCapIcon,
   ChartBarIcon,
-  ArrowArrowArrowTrendingUpIcon,
+  ArrowTrendingUpIcon,
   ArrowTrendingDownIcon
 } from '@heroicons/react/24/outline';
 

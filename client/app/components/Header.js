@@ -11,9 +11,8 @@ const navLinks = [
   { href: "/books", label: "Books" },
   { href: "/notes", label: "Notes" },
   { href: "/research-papers", label: "Research" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/contact", label: "Contact" },
-  { href: "/donate", label: "Donate" },
+  { href: "/admin", label: "Admin" },
+  { href: "/contact", label: "Contact" }
 ];
 
 const Header = () => {
