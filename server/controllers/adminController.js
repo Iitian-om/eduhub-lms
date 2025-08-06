@@ -140,25 +140,77 @@ export const getStats = async (req, res) => {
     res.json({ totalUsers, totalCourses, totalInstructors, totalContent, recentUsers, recentCourses });
 };
 
-// Get analytics (dummy data)
+// Analytics endpoint: returns real stats from DB
 export const getAnalytics = async (req, res) => {
-    // Return dummy analytics data
-    res.json({
-        overview: {
-            totalUsers: 1000,
-            totalCourses: 50,
-            totalContent: 200,
-            totalInstructors: 10,
-            totalRevenue: 5000,
-            monthlyGrowth: 8
-        },
-        userGrowth: [],
-        courseStats: [],
-        contentStats: [],
-        revenueData: [],
-        topCourses: [],
-        topInstructors: []
-    });
+    try {
+        // Get time range from query (default: last 30 days)
+        const timeRange = parseInt(req.query.timeRange) || 30;
+        const now = new Date();
+        const startDate = new Date(now);
+        startDate.setDate(now.getDate() - timeRange);
+
+        // Real counts
+        const totalUsers = await User.countDocuments();
+        const totalCourses = await Course.countDocuments();
+        const totalMales = await User.countDocuments({ gender: "Male" });
+        const totalFemales = await User.countDocuments({ gender: "Female" });
+        const totalInstructors = await User.countDocuments({ role: "Instructor" });
+        const totalContent =
+            await Note.countDocuments() +
+            await Book.countDocuments() +
+            await ResearchPaper.countDocuments();
+
+        // Monthly growth calculation (users created in last timeRange vs previous timeRange)
+        const usersLastPeriod = await User.countDocuments({ created_At: { $gte: startDate, $lte: now } });
+        const prevStartDate = new Date(startDate);
+        prevStartDate.setDate(startDate.getDate() - timeRange);
+        const usersPrevPeriod = await User.countDocuments({ created_At: { $gte: prevStartDate, $lt: startDate } });
+        const monthlyGrowth = usersPrevPeriod > 0
+            ? Math.round(((usersLastPeriod - usersPrevPeriod) / usersPrevPeriod) * 100)
+            : 0;
+
+        // Top courses by enrolled students
+        const topCourses = await Course.find()
+            .sort({ "enrolledStudents.length": -1 })
+            .limit(5)
+            .populate("createdBy", "name email");
+
+        // Top instructors by courses created
+        const topInstructors = await User.find({ role: "Instructor" })
+            .sort({ "Courses_Created.length": -1 })
+            .limit(5);
+
+        // Revenue: If you have a payments collection, aggregate here. Otherwise, set to zero.
+        const totalRevenue = 0; // Replace with aggregation if you have payments
+
+        // Course stats by category
+        const courseStats = await Course.aggregate([
+            { $group: { _id: "$category", count: { $sum: 1 } } }
+        ]).then(stats => stats.map(s => ({ category: s._id, count: s.count })));
+
+        res.json({
+            overview: {
+                totalUsers,
+                totalCourses,
+                totalContent,
+                totalInstructors,
+                totalRevenue,
+                monthlyGrowth
+            },
+            userGrowth: [], // Fill with real user growth data if needed
+            courseStats,
+            contentStats: [], // Fill with real content stats if needed
+            revenueData: [], // Fill with real revenue data if needed
+            topCourses,
+            topInstructors
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch analytics",
+            error: error.message
+        });
+    }
 };
 
 // Get reports (dummy data)
