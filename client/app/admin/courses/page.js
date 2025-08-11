@@ -43,7 +43,7 @@ export default function AdminCourses() {
 
   const fetchCourses = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/courses`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/courses`, {
         credentials: 'include'
       });
       
@@ -133,7 +133,7 @@ export default function AdminCourses() {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/courses/${selectedCourse._id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/courses/${selectedCourse._id}`, {
         method: 'DELETE',
         credentials: 'include'
       });

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "../context/UserContext"; // ✅ using the custom hook
+import { useUser } from "../context/UserContext"; // using the custom hook
 import AdminSidebar from "../components/AdminSidebar";
 import AdminStats from "../components/AdminStats";
 import AdminRecentActivity from "../components/AdminRecentActivity";
@@ -35,7 +35,7 @@ export default function AdminDashboard() {
 
   const fetchAdminStats = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/stats`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/stats`, {
         credentials: "include",
       });
 
