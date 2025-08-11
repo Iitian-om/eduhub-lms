@@ -47,7 +47,7 @@ export default function AdminAnalytics() {
 
   const fetchAnalytics = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/analytics?timeRange=${timeRange}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/analytics?timeRange=${timeRange}`, {
         credentials: 'include'
       });
       

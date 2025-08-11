@@ -44,7 +44,7 @@ export default function AdminInstructors() {
 
   const fetchInstructors = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/instructors`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/instructors`, {
         credentials: 'include'
       });
       
@@ -129,7 +129,7 @@ export default function AdminInstructors() {
 
   const confirmDelete = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/instructors/${selectedInstructor._id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/instructors/${selectedInstructor._id}`, {
         method: 'DELETE',
         credentials: 'include'
       });
@@ -150,7 +150,7 @@ export default function AdminInstructors() {
 
   const toggleVerification = async (instructorId, currentStatus) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/instructors/${instructorId}/verify`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/instructors/${instructorId}/verify`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

@@ -46,7 +46,7 @@ export default function AdminNotifications() {
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/notifications`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/notifications`, {
         credentials: "include"
       });
       
@@ -97,7 +97,7 @@ export default function AdminNotifications() {
     if (!confirm("Are you sure you want to delete this notification?")) return;
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/notifications/${notificationId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/notifications/${notificationId}`, {
         method: "DELETE",
         credentials: "include"
       });
@@ -116,7 +116,7 @@ export default function AdminNotifications() {
 
   const toggleStatus = async (notificationId, currentStatus) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/notifications/${notificationId}/toggle`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/notifications/${notificationId}/toggle`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

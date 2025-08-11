@@ -46,7 +46,7 @@ export default function AdminAuditLogs() {
         search: searchTerm
       });
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/audit-logs?${params}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/audit-logs?${params}`, {
         credentials: "include"
       });
       
