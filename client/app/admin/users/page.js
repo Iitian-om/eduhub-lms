@@ -42,7 +42,7 @@ export default function AdminUsers() {
         search: searchTerm
       });
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/users?${params}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/users?${params}`, {
         credentials: "include"
       });
       
@@ -73,7 +73,7 @@ export default function AdminUsers() {
     if (!confirm("Are you sure you want to delete this user?")) return;
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/users/${userId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/users/${userId}`, {
         method: "DELETE",
         credentials: "include"
       });

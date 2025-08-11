@@ -57,7 +57,7 @@ export default function AdminReports() {
 
   const fetchReports = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/reports?dateRange=${dateRange}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/reports?dateRange=${dateRange}`, {
         credentials: "include"
       });
       
@@ -75,7 +75,7 @@ export default function AdminReports() {
 
   const exportReport = async (type) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/reports/export/${type}?dateRange=${dateRange}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/reports/export/${type}?dateRange=${dateRange}`, {
         credentials: "include"
       });
       

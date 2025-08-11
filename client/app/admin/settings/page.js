@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import UserContext from '../../context/UserContext'; // ✅ Correct for your file!
+import UserContext from '../../context/UserContext'; // Correct for your file!
 import { useContext } from "react";
 import AdminSidebar from "../../components/AdminSidebar";
 import { 
@@ -73,7 +73,7 @@ export default function AdminSettings() {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/settings`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/settings`, {
         credentials: "include"
       });
       
@@ -92,7 +92,7 @@ export default function AdminSettings() {
   const handleSave = async (tabName) => {
     setSaving(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/settings/${tabName}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/settings/${tabName}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
