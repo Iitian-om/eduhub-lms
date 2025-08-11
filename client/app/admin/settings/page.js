@@ -73,7 +73,7 @@ export default function AdminSettings() {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/settings`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/settings`, {
         credentials: "include"
       });
       
@@ -92,7 +92,7 @@ export default function AdminSettings() {
   const handleSave = async (tabName) => {
     setSaving(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/settings/${tabName}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/settings/${tabName}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -19,7 +19,7 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`, {
         method: "POST",
         /*
         * This is important for cookies to be sent to the server.
@@ -94,4 +94,4 @@ export default function LoginPage() {
       </div>
     </div>
   );
-} 
+}
