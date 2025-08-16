@@ -1,16 +1,9 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/auth.js";
-import { 
-    createResearchPaper, 
-    getAllResearchPapers, 
-    getResearchPaperById, 
-    updateResearchPaper, 
-    deleteResearchPaper, 
-    getUserResearchPapers,
-    incrementCitations
-} from "../controllers/researchPaperController.js";
+import { createResearchPaper, getAllResearchPapers, getResearchPaperById, updateResearchPaper, deleteResearchPaper, getUserResearchPapers,incrementCitations} from "../controllers/researchPaperController.js";
 import { uploadResearchPaper, handleFileUploadError } from "../middlewares/fileUpload.js";
 
+// cjc
 const router = express.Router();
 
 // Public routes
