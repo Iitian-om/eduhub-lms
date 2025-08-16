@@ -4,7 +4,7 @@ import { uploadToCloudinary } from "../middlewares/fileUpload.js";
 // Create a new book
 export const createBook = async (req, res) => {
     try {
-        const { title, description, author, category, level, tags, markdownContent } = req.body;
+        const { title, description, author, category, level, tags, markdownContent } = req.body; // Destructure request body
 
         // Validate required fields
         if (!title || !description || !author || !category || !level) {
@@ -43,6 +43,7 @@ export const createBook = async (req, res) => {
         // Populate uploadedBy field
         await book.populate('uploadedBy', 'name userName profile_picture');
 
+        // Return success response
         res.status(201).json({
             success: true,
             message: "Book uploaded successfully",
@@ -226,7 +227,8 @@ export const deleteBook = async (req, res) => {
         const { id } = req.params;
 
         const book = await Book.findById(id);
-
+        
+        // Check if book with given id exists
         if (!book) {
             return res.status(404).json({
                 success: false,
@@ -234,14 +236,15 @@ export const deleteBook = async (req, res) => {
             });
         }
 
-        // Check if user is the owner
+        // Check if user is the owner/author for this book or not
         if (book.uploadedBy.toString() !== req.user._id.toString()) {
             return res.status(403).json({
                 success: false,
                 message: "You can only delete your own books"
             });
         }
-
+        
+        // Delete book from database if the upper two conditions satisfied
         await Book.findByIdAndDelete(id);
 
         res.status(200).json({

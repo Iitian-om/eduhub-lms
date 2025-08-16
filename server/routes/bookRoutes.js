@@ -1,16 +1,10 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/auth.js";
-import { 
-    createBook, 
-    getAllBooks, 
-    getBookById, 
-    updateBook, 
-    deleteBook, 
-    getUserBooks 
-} from "../controllers/bookController.js";
+import { createBook, getAllBooks, getBookById, updateBook, deleteBook, getUserBooks } from "../controllers/bookController.js";
 import { uploadBook, handleFileUploadError } from "../middlewares/fileUpload.js";
 
-const router = express.Router();
+// Book routes
+const router = express.Router(); // Create a new router instance
 
 // Public routes
 router.get("/", getAllBooks);
@@ -22,4 +16,5 @@ router.post("/", isAuthenticated, uploadBook, handleFileUploadError, createBook)
 router.put("/:id", isAuthenticated, updateBook);
 router.delete("/:id", isAuthenticated, deleteBook);
 
+// Export the router to be used in the main server file
 export default router; 

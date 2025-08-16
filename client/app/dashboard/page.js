@@ -70,9 +70,14 @@ export default function DashboardPage() {
               View Profile
             </Link>
             {(user.role === "Admin" || user.role === "Instructor") && (
-              <Link href="/create-course" className="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 transition">
-                Create Course
-              </Link>
+              <>
+                <Link href="/create-course" className="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700 transition">
+                  Create Course
+                </Link>
+                <Link href="/upload-book" className="bg-purple-600 text-white px-4 py-2 rounded shadow hover:bg-purple-700 transition">
+                  Upload Book
+                </Link>
+              </>
             )}
           </div>
         </div>

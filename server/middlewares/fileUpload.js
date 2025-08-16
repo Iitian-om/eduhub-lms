@@ -17,7 +17,7 @@ const fileFilter = (req, file, cb) => {
 
 // Create multer instance with file size limits
 const upload = multer({
-    storage: storage,
+    storage: storage, // Use memory storage
     fileFilter: fileFilter,
     limits: {
         fileSize: 3 * 1024 * 1024, // 3MB default limit
@@ -45,6 +45,7 @@ export const uploadResearchPaper = multer({
     }
 }).single('researchPaperFile');
 
+
 // Generic file upload function for Cloudinary
 export const uploadToCloudinary = async (file, folder) => {
     return new Promise((resolve, reject) => {
@@ -59,6 +60,7 @@ export const uploadToCloudinary = async (file, folder) => {
                 else reject(error);
             }
         );
+        // Pipe the file buffer to the Cloudinary upload stream
         streamifier.createReadStream(file.buffer).pipe(stream);
     });
 };
@@ -69,7 +71,7 @@ export const handleFileUploadError = (error, req, res, next) => {
         if (error.code === 'LIMIT_FILE_SIZE') {
             return res.status(400).json({
                 success: false,
-                message: 'File size too large. Please check the size limits.',
+                message: 'File size is too large. Please check the size limits.',
                 error: error.message
             });
         }
@@ -79,7 +81,8 @@ export const handleFileUploadError = (error, req, res, next) => {
             error: error.message
         });
     }
-    
+
+    // Check if file type is valid
     if (error.message === 'Only PDF files are allowed') {
         return res.status(400).json({
             success: false,

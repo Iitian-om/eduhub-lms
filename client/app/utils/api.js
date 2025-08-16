@@ -9,6 +9,7 @@ const getApiUrl = () => {
   return 'http://localhost:5000';
 };
 
+// Setting up the Bankend Url As per the condition (Development or production)
 export const API_BASE_URL = getApiUrl();
 
 // Helper function to make API calls
@@ -25,10 +26,11 @@ export const apiCall = async (endpoint, options = {}) => {
   };
 
   try {
+    // Making the API call
     const response = await fetch(url, defaultOptions);
     return await response.json();
   } catch (error) {
     console.error('API call failed:', error);
     throw error;
   }
-}; 
+};
