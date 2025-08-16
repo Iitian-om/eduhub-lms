@@ -3,7 +3,7 @@
 EduHub LMS is a full-stack web application built with a modular, scalable architecture. It consists of two main components:
 
 ## 1. Frontend (client/)
-- **Framework:** Next.js (React)
+- **Framework:** Next.js 15.3.4 (React)
 - **Routing:** App Router (file-based routing)
 - **Styling:** Tailwind CSS, PostCSS
 - **State Management:** React Context API

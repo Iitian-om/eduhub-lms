@@ -55,7 +55,7 @@ export default function RegisterPage() {
       }
 
       // Send POST request to registeration API to register the user
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/register`, {
         method: "POST",
         body: formData,
         credentials: 'include',

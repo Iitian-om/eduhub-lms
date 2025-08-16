@@ -70,8 +70,7 @@ export const register = async (req, res) => {
                     message: "Cloudinary is not configured properly",
                 });
             }
-            // Use streamifier to convert buffer to stream
-            // Upload buffer to Cloudinary
+            // Use streamifier to convert buffer to stream & Upload buffer to Cloudinary
             const streamUpload = (buffer) => {
                 return new Promise((resolve, reject) => {
                     const stream = cloudinary.v2.uploader.upload_stream(
