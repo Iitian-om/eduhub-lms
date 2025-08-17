@@ -11,14 +11,13 @@ This project is my college's capstone (group project) project held in my 2ns Sem
 
 ## How to Contribute
 1. Fork the repository
-2. Create a new branch (`feature/your-feature` or `fix/your-bug`)
+2. Create a new branch (`feature/your-feature-yourusername` or `fix/your-bug-yourusername`)
 3. Make your changes
 4. Write tests if applicable
-5. Commit and push your branch
+5. Commit and push your branch only
 6. Open a pull request
 
 ## Code Style
-- Use Prettier and ESLint for formatting
 - Write clear, descriptive commit messages
 - Follow the folder structure and naming conventions
 
@@ -27,7 +26,7 @@ This project is my college's capstone (group project) project held in my 2ns Sem
 - Provide detailed information and steps to reproduce
 
 ## Contact
-- For questions, reach out to the maintainer: omkumar@iitp.ac.in
+- For questions, reach out to the maintainer: iitp.omkumar@gmail.com
 
 ---
 See `README.md` for more details.
