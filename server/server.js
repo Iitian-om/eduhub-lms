@@ -72,6 +72,7 @@ app.use(pageNotFound); // Middleware to handle 404 errors
 // --- Server Startup Sequence --- Connect to the database first, then start the server
 connectDB().then(() => {
     app.listen(PORT, () => {
+        // console.log("MONGO_URI:", process.env.MONGO_URI);
         console.log(`Hence Development Server started running on port ${PORT}`)
     });
 }).catch(

@@ -52,6 +52,16 @@ const Header = () => {
               </Link>
             ))
           }
+          {loading ? null : user ? (
+            <Link
+              href="/profiles"
+              className="relative text-[#22292F] font-medium transition-colors duration-200
+                after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
+                hover:text-[#29C7C9] hover:after:w-full"
+            >
+              Profiles
+            </Link>
+          ) : null}
         </nav>
 
         {/* User Profile / Login/Register Buttons */}
@@ -130,6 +140,17 @@ const Header = () => {
                 </Link>
               ))
             }
+            {loading ? null : user ? (
+              <Link
+                href="/profiles"
+                className="relative text-[#22292F] font-medium transition-colors duration-200
+                  after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
+                  hover:text-[#29C7C9] hover:after:w-full"
+                onClick={() => setMenuOpen(false)}
+              >
+                Profiles
+              </Link>
+            ) : null}
 
             {
               // Conditional rendering based on loading and user state
