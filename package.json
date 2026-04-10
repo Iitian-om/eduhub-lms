@@ -1,4 +1,14 @@
 {
+  "name": "eduhub-lms",
+  "private": true,
+  "packageManager": "pnpm@10.7.0",
+  "scripts": {
+    "dev": "pnpm -r --parallel --filter ./client --filter ./server dev",
+    "dev:client": "pnpm --filter ./client dev",
+    "dev:server": "pnpm --filter ./server dev",
+    "build": "pnpm --filter ./client build",
+    "start": "pnpm --filter ./server start"
+  },
   "dependencies": {
     "@tiptap/pm": "^2.24.2",
     "@tiptap/react": "^2.24.2",
