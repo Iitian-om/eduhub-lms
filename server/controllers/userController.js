@@ -134,3 +134,106 @@ export const uploadProfilePicture = async (req, res) => {
         });
     }
 };
+
+const escapeRegex = (value = "") => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const toPublicProfile = (user) => ({
+    _id: user._id,
+    name: user.name,
+    userName: user.userName,
+    role: user.role,
+    bio: user.bio || "",
+    location: user.location || "",
+    profile_picture: user.profile_picture || "",
+    created_At: user.created_At,
+    stats: {
+        enrolledCourses: Array.isArray(user.Courses_Enrolled_In) ? user.Courses_Enrolled_In.length : 0,
+        completedCourses: Array.isArray(user.Courses_Completed) ? user.Courses_Completed.length : 0,
+        createdCourses: Array.isArray(user.Courses_Created) ? user.Courses_Created.length : 0,
+    },
+});
+
+export const getPublicProfiles = async (req, res) => {
+    try {
+        const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+        const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 12, 1), 50);
+        const role = req.query.role;
+        const search = (req.query.search || "").toString().trim().slice(0, 60);
+
+        const filter = { _id: { $ne: req.user._id } };
+
+        if (role && ["User", "Instructor", "Admin"].includes(role)) {
+            filter.role = role;
+        }
+
+        if (search) {
+            const safeSearch = escapeRegex(search);
+            filter.$or = [
+                { name: { $regex: safeSearch, $options: "i" } },
+                { userName: { $regex: safeSearch, $options: "i" } },
+            ];
+        }
+
+        const skip = (page - 1) * limit;
+
+        const [users, total] = await Promise.all([
+            User.find(filter)
+                .select("name userName role bio location profile_picture created_At Courses_Enrolled_In Courses_Completed Courses_Created")
+                .sort({ created_At: -1 })
+                .skip(skip)
+                .limit(limit),
+            User.countDocuments(filter),
+        ]);
+
+        res.status(200).json({
+            success: true,
+            users: users.map(toPublicProfile),
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit),
+            },
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch public profiles",
+            error: error.message,
+        });
+    }
+};
+
+export const getPublicProfileByUsername = async (req, res) => {
+    try {
+        const userName = (req.params.userName || "").toString().trim().toLowerCase();
+
+        if (!userName) {
+            return res.status(400).json({
+                success: false,
+                message: "Username is required",
+            });
+        }
+
+        const user = await User.findOne({ userName })
+            .select("name userName role bio location profile_picture created_At Courses_Enrolled_In Courses_Completed Courses_Created");
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "Profile not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            user: toPublicProfile(user),
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch profile",
+            error: error.message,
+        });
+    }
+};
