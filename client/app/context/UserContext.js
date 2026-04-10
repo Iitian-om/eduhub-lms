@@ -2,23 +2,11 @@
 
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { API_BASE_URL } from "../utils/api";
 
 const UserContext = createContext();
 
 export const useUser = () => useContext(UserContext);
-
-// API configuration
-const getApiUrl = () => {
-  // Check if we're in production (Vercel)
-  if (typeof window !== 'undefined' && window.location.hostname === 'eduhub-lms-rose.vercel.app') {
-    return 'https://eduhub-crit.onrender.com';
-  }
-  
-  // Development
-  return 'http://localhost:5000';
-};
-
-const API_BASE_URL = getApiUrl();
 
 export const UserProvider = ({ children }) => {
   

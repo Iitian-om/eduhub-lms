@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useUser } from "../context/UserContext";
+import { API_BASE_URL } from "../utils/api";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -55,7 +56,7 @@ export default function RegisterPage() {
       }
 
       // Send POST request to registeration API to register the user
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/register`, {
+      const res = await fetch(`${API_BASE_URL}/api/v1/auth/register`, {
         method: "POST",
         body: formData,
         credentials: 'include',

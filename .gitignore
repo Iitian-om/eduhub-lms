@@ -8,3 +8,5 @@ node_modules/
 .env.production.local
 /build
 /dist
+
+node_modules/*
