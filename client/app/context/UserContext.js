@@ -1,3 +1,5 @@
+// UserContext.js - Manages user authentication state and profile data across the app
+
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 

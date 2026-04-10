@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useUser } from "../context/UserContext";
-import { API_BASE_URL } from "../utils/api";
+import { useUser } from "../../context/UserContext";
+import { API_BASE_URL } from "../../utils/api";
 
 export default function ProfilesPage() {
   const { user, loading } = useUser();
