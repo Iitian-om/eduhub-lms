@@ -99,6 +99,22 @@ export default function AdminAuditLogs() {
     }
   };
 
+  const getSourceLabel = (source) => {
+    const value = (source || "").toLowerCase();
+    if (value === "frontend") return "Frontend";
+    if (value === "backend") return "Backend";
+    if (value === "local") return "Local";
+    return "Unknown";
+  };
+
+  const getSourceColor = (source) => {
+    const value = (source || "").toLowerCase();
+    if (value === "frontend") return "bg-cyan-100 text-cyan-800";
+    if (value === "backend") return "bg-emerald-100 text-emerald-800";
+    if (value === "local") return "bg-violet-100 text-violet-800";
+    return "bg-gray-100 text-gray-800";
+  };
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString("en-US", {
       year: "numeric",
@@ -200,6 +216,9 @@ export default function AdminAuditLogs() {
                     Action
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Source
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Description
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -235,6 +254,11 @@ export default function AdminAuditLogs() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                         {log.action}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getSourceColor(log.source)}`}>
+                        {getSourceLabel(log.source)}
                       </span>
                     </td>
                     <td className="px-6 py-4">

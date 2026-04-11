@@ -12,13 +12,13 @@ export const dynamic = "force-dynamic";
 
 export default function AdminDashboard() {
   const { user } = useUser(); // ✅ cleaner than useContext(UserContext)
-  const router = useRouter();
+  const router = useRouter(); // Use Router from next/navigation for client-side navigation That is Bina page refresh ke bina route change karne ke liye use hota hai.
   const [stats, setStats] = useState({
     totalUsers: 0,
     totalCourses: 0,
     totalInstructors: 0,
     totalContent: 0,
-    recentUsers: [],
+    recentUsers: [], 
     recentCourses: [],
   });
   const [loading, setLoading] = useState(true);
