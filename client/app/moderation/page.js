@@ -149,12 +149,18 @@ export default function ModerationPage() {
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => handleDelete(tab, item._id)}
-                      className="px-3 py-2 rounded-lg border border-red-300 text-red-600 hover:bg-red-50 text-sm"
-                    >
-                      Remove
-                    </button>
+                    {user.role === "Admin" ? (
+                      <button
+                        onClick={() => handleDelete(tab, item._id)}
+                        className="px-3 py-2 rounded-lg border border-red-300 text-red-600 hover:bg-red-50 text-sm"
+                      >
+                        Remove
+                      </button>
+                    ) : (
+                      <span className="px-3 py-2 rounded-lg border border-gray-200 text-gray-500 text-sm">
+                        View only
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
