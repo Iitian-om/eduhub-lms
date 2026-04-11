@@ -80,7 +80,7 @@ export default function ProfilesPage() {
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-[#22292F]">Learn in Public</h1>
-          <p className="text-gray-600 mt-1">Discover students, instructors and admins in EduHub.</p>
+          <p className="text-gray-600 mt-1">Discover students, instructors, moderators, and admins in EduHub.</p>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
@@ -100,6 +100,7 @@ export default function ProfilesPage() {
               <option value="all">All roles</option>
               <option value="User">User</option>
               <option value="Instructor">Instructor</option>
+              <option value="Mod">Mod</option>
               <option value="Admin">Admin</option>
             </select>
             <button type="submit" className="bg-[#29C7C9] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#22b6b7]">

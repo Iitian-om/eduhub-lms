@@ -56,8 +56,9 @@ export default function DebugPage() {
                         <h3 className="font-semibold text-yellow-800 mb-2">Role Check Results:</h3>
                         <div className="space-y-2 text-sm">
                             <div>Is Admin: {user.role === "Admin" ? "✅ Yes" : "❌ No"}</div>
+                            <div>Is Mod: {user.role === "Mod" ? "✅ Yes" : "❌ No"}</div>
                             <div>Is Instructor: {user.role === "Instructor" ? "✅ Yes" : "❌ No"}</div>
-                            <div>Can Create Course: {(user.role === "Admin" || user.role === "Instructor") ? "✅ Yes" : "❌ No"}</div>
+                            <div>Can Create Course: {(user.role === "Admin" || user.role === "Instructor" || user.role === "Mod") ? "✅ Yes" : "❌ No"}</div>
                         </div>
                     </div>
 

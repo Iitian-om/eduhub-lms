@@ -26,7 +26,7 @@ router.get("/:id", getCourseById);
 router.post(
     "/",
     isAuthenticated,
-    authorizeRoles("Admin", "Instructor"),
+    authorizeRoles("Admin", "Instructor", "Mod"),
     createCourse
 );
 

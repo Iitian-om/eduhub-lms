@@ -21,7 +21,7 @@ export default function CreateCoursePage() {
   useEffect(() => {
     if (!loading && !user) {
       router.push("/login");
-    } else if (!loading && user && user.role !== "Admin" && user.role !== "Instructor") {
+    } else if (!loading && user && user.role !== "Admin" && user.role !== "Instructor" && user.role !== "Mod") {
       router.push("/dashboard");
     }
   }, [user, loading, router]);
@@ -75,7 +75,7 @@ export default function CreateCoursePage() {
 
   if (loading) return <div>Loading...</div>;
   if (!user) return null;
-  if (user.role !== "Admin" && user.role !== "Instructor") return null;
+  if (user.role !== "Admin" && user.role !== "Instructor" && user.role !== "Mod") return null;
 
   return (
     <div className="min-h-screen bg-[#F7F9FA] py-8">

@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({ // Schema is a blueprint for the struct
     },
     role: {
         type: String,
-        enum: ["User", "Admin", "Instructor"],
+        enum: ["User", "Admin", "Instructor", "Mod"],
         default: "User", // Default role is User
     },
     created_At: {
