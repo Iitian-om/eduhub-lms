@@ -135,8 +135,16 @@ export const getStats = async (req, res) => {
     const totalCourses = await Course.countDocuments();
     const totalInstructors = await User.countDocuments({ role: "Instructor" });
     const totalContent = await Note.countDocuments() + await Book.countDocuments() + await ResearchPaper.countDocuments();
-    const recentUsers = await User.find().sort({ created_At: -1 }).limit(5);
-    const recentCourses = await Course.find().sort({ createdAt: -1 }).limit(5);
+    const recentUsers = await User.find()
+        .sort({ created_At: -1 })
+        .limit(10)
+        .select("_id name email role created_At")
+        .lean();
+    const recentCourses = await Course.find()
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .select("_id title category createdAt")
+        .lean(); 
     res.json({ totalUsers, totalCourses, totalInstructors, totalContent, recentUsers, recentCourses });
 };
 
@@ -191,6 +199,8 @@ export const getAnalytics = async (req, res) => {
         res.json({
             overview: {
                 totalUsers,
+                totalMales,
+                totalFemales,
                 totalCourses,
                 totalContent,
                 totalInstructors,
@@ -229,13 +239,398 @@ export const getReports = async (req, res) => {
     });
 };
 
-// Get audit logs (dummy data)
-export const getAuditLogs = async (req, res) => {
-    // Return dummy logs
-    res.json({
-        logs: [],
-        totalPages: 1
+// Get audit logs (Real Logs Data from Vercel + Render)
+
+const AUDIT_LEVELS = new Set(["error", "warning", "info", "success"]); // Supported normalized levels used by the admin UI badges and filters.
+
+// Normalize provider-specific severities into UI-safe levels.
+const normalizeLevel = (rawLevel = "", message = "", statusCode = "") => {
+    const level = String(rawLevel || "").toLowerCase();
+    if (AUDIT_LEVELS.has(level)) return level;
+
+    const msg = String(message || "").toLowerCase();
+    const status = Number(statusCode);
+
+    if (level === "warn") return "warning";
+    if (status >= 500 || msg.includes("error") || msg.includes("exception") || msg.includes("failed")) return "error";
+    if ((status >= 400 && status < 500) || msg.includes("warn")) return "warning";
+    if (status >= 200 && status < 400) return "success";
+    return "info";
+};
+
+// Best-effort action detection from log text for action-based filtering.
+const detectAction = (message = "") => {
+    const msg = String(message || "").toLowerCase();
+    if (msg.includes("login") || msg.includes("sign in")) return "login";
+    if (msg.includes("logout") || msg.includes("sign out")) return "logout";
+    if (msg.includes("create") || msg.includes("created")) return "create";
+    if (msg.includes("update") || msg.includes("updated") || msg.includes("edit")) return "update";
+    if (msg.includes("delete") || msg.includes("removed")) return "delete";
+    if (msg.includes("enroll")) return "enroll";
+    if (msg.includes("payment") || msg.includes("checkout")) return "payment";
+    return "system";
+};
+
+// Render logs include metadata in label pairs; this helper extracts one value.
+const getLabelValue = (labels = [], key) => {
+    const label = labels.find((item) => item?.name === key);
+    return label?.value;
+};
+
+// Simple regex to match IPv4 addresses in various log fields and formats.
+const IPV4_REGEX = /\b(?:\d{1,3}\.){3}\d{1,3}\b/;
+
+const firstIpFromString = (value = "") => {
+    const text = String(value || "");
+    const match = text.match(IPV4_REGEX);
+    return match ? match[0] : "";
+};
+
+const resolveIpAddress = (...candidates) => {
+    for (const candidate of candidates) {
+        if (!candidate) continue;
+
+        if (Array.isArray(candidate)) {
+            const resolved = resolveIpAddress(...candidate);
+            if (resolved) return resolved;
+            continue;
+        }
+
+        if (typeof candidate === "object") {
+            const resolved = resolveIpAddress(...Object.values(candidate));
+            if (resolved) return resolved;
+            continue;
+        }
+
+        const raw = String(candidate).trim();
+        if (!raw) continue;
+
+        // x-forwarded-for style values may contain multiple comma-separated IPs.
+        const firstSegment = raw.split(",")[0].trim();
+        const ip = firstIpFromString(firstSegment) || firstIpFromString(raw);
+        if (ip) return ip;
+    }
+
+    return "";
+};
+
+// Parse pagination inputs safely and fallback on invalid values.
+const toPositiveInt = (value, fallback) => {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+};
+
+// Fetch frontend runtime logs from Vercel and convert them to a shared shape.
+const fetchVercelLogs = async ({ search = "", limit = 50, levelFilter = "" }) => {
+    const token = process.env.VERCEL_TOKEN;
+    const projectId = process.env.VERCEL_PROJECT_ID;
+    const teamId = process.env.VERCEL_TEAM_ID;
+
+    if (!token || !projectId) {
+        return {
+            logs: [],
+            connected: false,
+            error: "Missing VERCEL_TOKEN or VERCEL_PROJECT_ID"
+        };
+    }
+
+    const endpoint = process.env.VERCEL_LOGS_API_URL || `https://api.vercel.com/v2/projects/${projectId}/logs`;
+    const params = new URLSearchParams({
+        limit: String(Math.min(limit, 100)),
+        since: String(Date.now() - 60 * 60 * 1000)
     });
+
+    if (teamId) params.set("teamId", teamId);
+    if (search) params.set("query", search);
+    if (levelFilter) params.set("level", levelFilter);
+
+    const response = await fetch(`${endpoint}?${params.toString()}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        return {
+            logs: [],
+            connected: false,
+            error: `Vercel API failed (${response.status}): ${errorText.slice(0, 200)}`
+        };
+    }
+
+    const payload = await response.json();
+    const rawLogs = Array.isArray(payload) ? payload : (payload?.logs || []);
+
+    const logs = rawLogs.map((log, index) => {
+        const statusCode = log?.statusCode || log?.status || "";
+        const message =
+            log?.message ||
+            log?.text ||
+            log?.requestPath ||
+            log?.path ||
+            "Frontend runtime log";
+        const timestamp = log?.timestamp || log?.createdAt || log?.time || new Date().toISOString();
+        const level = normalizeLevel(log?.level, message, statusCode);
+        const ipAddress = resolveIpAddress(
+            log?.ipAddress,
+            log?.ip,
+            log?.requestIp,
+            log?.clientIp,
+            log?.sourceIp,
+            log?.request?.ip,
+            log?.request?.headers?.["x-forwarded-for"],
+            log?.headers?.["x-forwarded-for"],
+            log?.metadata,
+            message
+        ) || "N/A";
+
+        // Return a normalized audit log compatible with existing frontend table fields.
+        return {
+            _id: `vercel-${log?.id || index}-${new Date(timestamp).getTime()}`,
+            source: "frontend",
+            platform: "vercel",
+            level,
+            action: detectAction(message),
+            description: message,
+            ipAddress,
+            timestamp,
+            user: {
+                name: "Frontend (Vercel)",
+                email: "frontend@eduhub-lms-rose.vercel.app"
+            }
+        };
+    });
+
+    return {
+        logs,
+        connected: true,
+        error: null
+    };
+};
+
+// Fetch backend service logs from Render and convert them to the same shared shape.
+const fetchRenderLogs = async ({ search = "", limit = 50, levelFilter = "" }) => {
+    const token = process.env.RENDER_API_KEY;
+    const ownerId = process.env.RENDER_OWNER_ID;
+    const resourceIds = (process.env.RENDER_RESOURCE_IDS || process.env.RENDER_SERVICE_ID || "")
+        .split(",")
+        .map((value) => value.trim())
+        .filter(Boolean);
+
+    if (!token || !ownerId || resourceIds.length === 0) {
+        return {
+            logs: [],
+            connected: false,
+            error: "Missing RENDER_API_KEY, RENDER_OWNER_ID, or RENDER_RESOURCE_IDS"
+        };
+    }
+
+    const endpoint = process.env.RENDER_LOGS_API_URL || "https://api.render.com/v1/logs";
+    const params = new URLSearchParams({
+        ownerId,
+        direction: "backward",
+        limit: String(Math.min(limit, 100))
+    });
+
+    resourceIds.forEach((id) => params.append("resource", id));
+    if (search) params.append("text", search);
+    if (levelFilter) params.append("level", levelFilter);
+
+    const response = await fetch(`${endpoint}?${params.toString()}`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        return {
+            logs: [],
+            connected: false,
+            error: `Render API failed (${response.status}): ${errorText.slice(0, 200)}`
+        };
+    }
+
+    const payload = await response.json();
+    const rawLogs = Array.isArray(payload?.logs) ? payload.logs : [];
+
+    const logs = rawLogs.map((log, index) => {
+        const statusCode = getLabelValue(log?.labels, "statusCode") || "";
+        const method = getLabelValue(log?.labels, "method") || "";
+        const path = getLabelValue(log?.labels, "path") || "";
+        const host = getLabelValue(log?.labels, "host") || "";
+        const level = normalizeLevel(getLabelValue(log?.labels, "level"), log?.message, statusCode);
+        const description = [method, path, log?.message].filter(Boolean).join(" ").trim() || "Backend service log";
+        const ipAddress = resolveIpAddress(
+            getLabelValue(log?.labels, "ip"),
+            getLabelValue(log?.labels, "remoteAddr"),
+            getLabelValue(log?.labels, "remote_addr"),
+            getLabelValue(log?.labels, "clientIp"),
+            getLabelValue(log?.labels, "xForwardedFor"),
+            getLabelValue(log?.labels, "x_forwarded_for"),
+            getLabelValue(log?.labels, "forwarded"),
+            host,
+            description
+        ) || host || "N/A";
+
+        // Keep backend entries consistent with frontend entries for easy merging and filtering.
+        return {
+            _id: `render-${log?.id || index}-${new Date(log?.timestamp || Date.now()).getTime()}`,
+            source: "backend",
+            platform: "render",
+            level,
+            action: detectAction(description),
+            description,
+            ipAddress,
+            timestamp: log?.timestamp || new Date().toISOString(),
+            user: {
+                name: "Backend (Render)",
+                email: "backend@eduhub-crit.onrender.com"
+            }
+        };
+    });
+
+    return {
+        logs,
+        connected: true,
+        error: null
+    };
+};
+
+// Local fallback for development: infer audit-like entries from recent DB changes.
+const fetchLocalAuditLogs = async ({ limit = 100 }) => {
+    const [recentUsers, recentCourses] = await Promise.all([
+        User.find()
+            .sort({ created_At: -1 })
+            .limit(limit)
+            .select("_id name email created_At")
+            .lean(),
+        Course.find()
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .select("_id title category createdAt")
+            .lean()
+    ]);
+
+    const userLogs = recentUsers.map((user) => ({
+        _id: `local-user-${user._id}`,
+        source: "local",
+        platform: "mongodb",
+        level: "success",
+        action: "create",
+        description: `New user registered: ${user.name || "Unknown user"}`,
+        ipAddress: "127.0.0.1",
+        timestamp: user.created_At || new Date().toISOString(),
+        user: {
+            name: user.name || "User",
+            email: user.email || "N/A"
+        }
+    }));
+
+    const courseLogs = recentCourses.map((course) => ({
+        _id: `local-course-${course._id}`,
+        source: "local",
+        platform: "mongodb",
+        level: "info",
+        action: "create",
+        description: `Course created: ${course.title || "Untitled course"}`,
+        ipAddress: "127.0.0.1",
+        timestamp: course.createdAt || new Date().toISOString(),
+        user: {
+            name: "System",
+            email: "system@localhost"
+        }
+    }));
+
+    return {
+        logs: [...userLogs, ...courseLogs],
+        connected: true,
+        error: null
+    };
+};
+
+// Get audit logs from Vercel (frontend) + Render (backend)
+export const getAuditLogs = async (req, res) => {
+    try {
+        // Read and sanitize filter + pagination params from query string.
+        const page = toPositiveInt(req.query.page, 1);
+        const limit = Math.min(toPositiveInt(req.query.limit, 20), 100);
+        const level = String(req.query.level || "").toLowerCase();
+        const action = String(req.query.action || "").toLowerCase();
+        const search = String(req.query.search || "").trim().toLowerCase();
+
+        // Fetch both providers in parallel to reduce overall response latency.
+        const [vercelResult, renderResult, localResult] = await Promise.all([
+            fetchVercelLogs({ search, limit: 100, levelFilter: level }),
+            fetchRenderLogs({ search, limit: 100, levelFilter: level }),
+            fetchLocalAuditLogs({ limit: 100 })
+        ]);
+
+        // Merge, apply server-side filters, and keep newest logs first.
+        const providerLogs = [...vercelResult.logs, ...renderResult.logs];
+        const allLogs = providerLogs.length > 0 ? providerLogs : localResult.logs;
+
+        const mergedLogs = allLogs
+            .filter((log) => {
+                const matchesLevel = !level || log.level === level;
+                const matchesAction = !action || log.action === action;
+                const matchesSearch =
+                    !search ||
+                    [
+                        log.description,
+                        log.action,
+                        log.level,
+                        log.platform,
+                        log.user?.name,
+                        log.user?.email,
+                        log.ipAddress
+                    ]
+                        .filter(Boolean)
+                        .join(" ")
+                        .toLowerCase()
+                        .includes(search);
+                return matchesLevel && matchesAction && matchesSearch;
+            })
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        // Apply pagination after merge so page boundaries are global across both sources.
+        const total = mergedLogs.length;
+        const totalPages = Math.max(1, Math.ceil(total / limit));
+        const safePage = Math.min(page, totalPages);
+        const start = (safePage - 1) * limit;
+        const logs = mergedLogs.slice(start, start + limit);
+
+        res.set("Cache-Control", "no-store");
+        res.json({
+            logs,
+            total,
+            totalPages,
+            page: safePage,
+            sources: {
+                vercel: {
+                    connected: vercelResult.connected,
+                    error: vercelResult.error
+                },
+                render: {
+                    connected: renderResult.connected,
+                    error: renderResult.error
+                },
+                local: {
+                    connected: localResult.connected,
+                    error: localResult.error
+                }
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch audit logs",
+            error: error.message
+        });
+    }
 };
 
 // --- Notifications (Dummy CRUD) ---
@@ -274,7 +669,7 @@ export const toggleNotification = (req, res) => {
 
 // In-memory settings object for demo
 let settings = {
-    general: { siteName: "EduHub LMS", siteDescription: "...", contactEmail: "...", supportPhone: "...", timezone: "UTC", dateFormat: "MM/DD/YYYY", timeFormat: "12h" },
+    general: { siteName: "EduHub LMS", siteDescription: "...", contactEmail: "...", supportPhone: "...", timezone: "UTC + 5:30", dateFormat: "DD/MM/YYYY", timeFormat: "12h" },
     security: { passwordMinLength: 8, requireEmailVerification: true, allowSocialLogin: true, sessionTimeout: 24, maxLoginAttempts: 5, enableTwoFactor: false },
     notifications: { emailNotifications: true, pushNotifications: true, courseUpdates: true, systemMaintenance: true, marketingEmails: false },
     payment: { currency: "USD", stripeEnabled: true, paypalEnabled: false, taxRate: 0.08, refundPolicy: "7 days", autoRenewal: true },
