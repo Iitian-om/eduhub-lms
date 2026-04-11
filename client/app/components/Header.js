@@ -11,6 +11,7 @@ const navLinks = [
   { href: "/books", label: "Books" },
   { href: "/notes", label: "Notes" },
   { href: "/research-papers", label: "Research" },
+  { href: "/support", label: "Ask EduBuddy AI" },
   { href: "/admin", label: "Admin" },
   { href: "/contact", label: "Contact" }
 ];
