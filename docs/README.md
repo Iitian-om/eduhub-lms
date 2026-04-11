@@ -1,5 +1,7 @@
 # EduHub LMS Documentation
 
+Last updated: 2026-04-11
+
 Welcome to the documentation for EduHub LMS. This folder contains all technical and user documentation for the project.
 
 ## 📄 Contents

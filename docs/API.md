@@ -1,5 +1,7 @@
 # EduHub API Onboarding Guide
 
+Last updated: 2026-04-11
+
 ## What is an API?
 An API (Application Programming Interface) is a set of rules that allows your frontend to communicate with your backend (server). Instead of hardcoding data, the frontend makes HTTP requests to the backend and receives JSON data in response.
 
@@ -196,20 +198,26 @@ POST   /api/v1/support/chatbot                  → Ask the EduHub support bot a
 
 **Access rules**:
 - Requires a valid logged-in session
-- Allowed roles: `User`, `Instructor`, `Admin`
-- Rate limit: `User` and `Admin` get 5 messages per 30 minutes, `Instructor` gets 5 messages per hour
+- Allowed roles: `User`, `Instructor`, `Mod`, `Admin`
+- AI-only rate limit (FAQ replies do not consume quota):
+  - `User`: 5 AI messages per hour
+  - `Instructor`: 10 AI messages per hour
+  - `Mod`: 15 AI messages per hour
+  - `Admin`: unlimited
 
 **Cost controls**:
 - Short message limit to block oversized prompts
 - FAQ-style answers are served locally when possible
-- Live AI is only used when `OPENAI_API_KEY` is configured
+- Live AI is only used when `OPENROUTER_API_KEY` is configured
+- Primary model: `google/gemma-2-9b-it`
+- Fallback model: `google/gemma-3-27b-it`
 - Response generation is capped to a short completion
 
 **Environment variables**:
-- `OPENAI_API_KEY`
-- `OPENAI_API_URL` optional, defaults to the OpenAI chat completions endpoint
-- `OPENAI_MODEL` optional, defaults to `gpt-4o-mini`
-- Legacy aliases `AI_CHATBOT_API_KEY`, `AI_CHATBOT_API_URL`, and `AI_CHATBOT_MODEL` are still accepted for backwards compatibility
+- `OPENROUTER_API_KEY`
+- `AI_MODEL` optional, defaults to `google/gemma-2-9b-it`
+- `SUPPORT_BOT_NAME` optional
+- `SUPPORT_BOT_SYSTEM_CONTEXT` optional
 
 ---
 
@@ -275,6 +283,26 @@ PUT    /api/v1/admin/settings/:tab              → Update specific setting
 
 ---
 
+### 10. Moderation Management (Admin + Mod)
+Routes: `server/routes/modRoutes.js`
+
+**Read/Review endpoints**:
+```
+GET    /api/v1/mod/overview                     → Moderation overview stats
+GET    /api/v1/mod/notes                        → List notes for moderation
+GET    /api/v1/mod/books                        → List books for moderation
+GET    /api/v1/mod/papers                       → List research papers for moderation
+```
+
+**Delete endpoints (Admin only)**:
+```
+DELETE /api/v1/mod/notes/:id                    → Delete note
+DELETE /api/v1/mod/books/:id                    → Delete book
+DELETE /api/v1/mod/papers/:id                   → Delete research paper
+```
+
+---
+
 ## Internal vs External APIs
 
 ### External APIs (Used by Your Frontend)
@@ -316,7 +344,7 @@ Location: `server/middlewares/auth.js`
 
 ```javascript
 isAuthenticated()     → Checks if user is logged in (validates JWT token)
-authorizeRoles()      → Checks if user has specific role (Admin, Instructor, User)
+authorizeRoles()      → Checks if user has specific role (Admin, Mod, Instructor, User)
 ```
 
 **How it works**:
@@ -359,7 +387,7 @@ const hashedPassword = await bcrypt.hash(password, 10);
 
 ### 3. Role-Based Access Control (RBAC) ✅
 ```javascript
-// Admin, Instructor, User roles with different permissions
+// Admin, Mod, Instructor, User roles with different permissions
 router.delete("/users/:id", adminOnly, deleteUser);
 ```
 
