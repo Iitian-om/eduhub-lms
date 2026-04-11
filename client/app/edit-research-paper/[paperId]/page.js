@@ -64,7 +64,7 @@ export default function EditResearchPaperPage({ params }) {
         setCurrentFileUrl(paper.fileUrl || '');
         
         // Check user permissions - only allow edit by admin or the instructor who uploaded it
-        if (user && (user.role !== 'Admin' && 
+        if (user && (user.role !== 'Admin' && user.role !== 'Mod' && 
             (user.role !== 'Instructor' || (paper.uploadedBy?._id !== user._id)))) {
           setError('You do not have permission to edit this research paper');
         }
@@ -108,7 +108,7 @@ export default function EditResearchPaperPage({ params }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!user || (user.role !== 'Admin' && user.role !== 'Instructor')) {
+    if (!user || (user.role !== 'Admin' && user.role !== 'Instructor' && user.role !== 'Mod')) {
       setError('You do not have permission to edit research papers');
       return;
     }

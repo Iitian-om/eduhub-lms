@@ -99,7 +99,7 @@ export default function EditBookPage({ params }) {
       if (!user) {
         // Redirect to login if not authenticated
         router.push("/login");
-      } else if (user.role !== "Admin" && user.role !== "Instructor") {
+      } else if (user.role !== "Admin" && user.role !== "Instructor" && user.role !== "Mod") {
         // Redirect to dashboard if user doesn't have required role
         router.push("/dashboard");
       }
@@ -206,7 +206,7 @@ export default function EditBookPage({ params }) {
   }
   
   // Access control check
-  if (!user || (user.role !== "Admin" && user.role !== "Instructor")) {
+  if (!user || (user.role !== "Admin" && user.role !== "Instructor" && user.role !== "Mod")) {
     return null;
   }
   

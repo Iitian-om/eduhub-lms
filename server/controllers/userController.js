@@ -162,7 +162,7 @@ export const getPublicProfiles = async (req, res) => {
 
         const filter = { _id: { $ne: req.user._id } };
 
-        if (role && ["User", "Instructor", "Admin"].includes(role)) {
+        if (role && ["User", "Instructor", "Admin", "Mod"].includes(role)) {
             filter.role = role;
         }
 

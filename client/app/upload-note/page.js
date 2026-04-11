@@ -47,7 +47,7 @@ export default function UploadNotePage() {
         if (!loading && !user) {
             // Redirect to login if not authenticated
             router.push("/login");
-        } else if (!loading && user && user.role !== "Admin" && user.role !== "Instructor") {
+        } else if (!loading && user && user.role !== "Admin" && user.role !== "Instructor" && user.role !== "Mod") {
             // Redirect to dashboard if user doesn't have required role
             router.push("/dashboard");
         }
@@ -192,12 +192,12 @@ export default function UploadNotePage() {
         );
     }
     // Check if user has the permission to upload notes
-    if (user.role !== "Admin" && user.role !== "Instructor") {
+    if (user.role !== "Admin" && user.role !== "Instructor" && user.role !== "Mod") {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#F7F9FA]">
                 <div className="bg-white rounded-xl shadow-lg p-8 text-center">
                     <h2 className="text-2xl font-bold text-red-600 mb-4">Permission Denied</h2>
-                    <p className="text-black-700">You do not have permission to upload notes. Only instructors and Admins can upload notes. Please contact your administrator if you believe this is an error.</p>
+                    <p className="text-black-700">You do not have permission to upload notes. Only instructors, moderators, and admins can upload notes. Please contact your administrator if you believe this is an error.</p>
                 </div>
             </div>
         );

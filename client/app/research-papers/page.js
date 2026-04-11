@@ -111,7 +111,7 @@ export default function ResearchPaperListPage() {
               </p>
             </div>
             {/* Upload button only shown to admins and instructors */}
-            {user && (user.role === 'Admin' || user.role === 'Instructor') && (
+            {user && (user.role === 'Admin' || user.role === 'Instructor' || user.role === 'Mod') && (
               <Link
                 href="/upload-research-paper"
                 className="bg-white text-[#2AC9C7] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition flex items-center shadow-lg"
@@ -209,7 +209,7 @@ export default function ResearchPaperListPage() {
             <h3 className="text-2xl font-semibold text-gray-800 mb-2">No research papers yet</h3>
             <p className="text-gray-500 max-w-md mx-auto mb-6">Your library is empty. Be the first to contribute research papers to our academic collection.</p>
             
-            {user && (user.role === "Admin" || user.role === "Instructor") && (
+            {user && (user.role === "Admin" || user.role === "Instructor" || user.role === "Mod") && (
               <Link href="/upload-research-paper" className="inline-flex items-center bg-[#2AC9C7] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#28B8B6] transition shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -315,7 +315,7 @@ export default function ResearchPaperListPage() {
                     )}
                     
                     {/* Admin/instructor controls */}
-                    {user && (user.role === "Admin" || (user.role === "Instructor" && paper.uploadedBy?._id === user._id)) && (
+                    {user && (user.role === "Admin" || user.role === "Mod" || (user.role === "Instructor" && paper.uploadedBy?._id === user._id)) && (
                       <div className="flex gap-2 mt-2">
                         <Link 
                           href={`/edit-research-paper/${paper._id}`}

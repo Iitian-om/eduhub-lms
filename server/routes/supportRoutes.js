@@ -9,7 +9,7 @@ const router = express.Router();
 router.post(
     "/chatbot",
     isAuthenticated,
-    authorizeRoles("User", "Instructor", "Admin"),
+    authorizeRoles("User", "Instructor", "Admin", "Mod"),
     chatbotRateLimit,
     getSupportBotReply
 );

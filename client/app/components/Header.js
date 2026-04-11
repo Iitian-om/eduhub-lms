@@ -12,7 +12,6 @@ const navLinks = [
   { href: "/notes", label: "Notes" },
   { href: "/research-papers", label: "Research" },
   { href: "/support", label: "Ask EduBuddy AI" },
-  { href: "/admin", label: "Admin" },
   { href: "/contact", label: "Contact" }
 ];
 
@@ -61,6 +60,26 @@ const Header = () => {
                 hover:text-[#29C7C9] hover:after:w-full"
             >
               Profiles
+            </Link>
+          ) : null}
+          {loading ? null : user && (user.role === "Admin" || user.role === "Mod") ? (
+            <Link
+              href="/moderation"
+              className="relative text-[#22292F] font-medium transition-colors duration-200
+                after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
+                hover:text-[#29C7C9] hover:after:w-full"
+            >
+              Moderation
+            </Link>
+          ) : null}
+          {loading ? null : user && user.role === "Admin" ? (
+            <Link
+              href="/admin"
+              className="relative text-[#22292F] font-medium transition-colors duration-200
+                after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
+                hover:text-[#29C7C9] hover:after:w-full"
+            >
+              Admin
             </Link>
           ) : null}
         </nav>
@@ -150,6 +169,28 @@ const Header = () => {
                 onClick={() => setMenuOpen(false)}
               >
                 Profiles
+              </Link>
+            ) : null}
+            {loading ? null : user && (user.role === "Admin" || user.role === "Mod") ? (
+              <Link
+                href="/moderation"
+                className="relative text-[#22292F] font-medium transition-colors duration-200
+                  after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
+                  hover:text-[#29C7C9] hover:after:w-full"
+                onClick={() => setMenuOpen(false)}
+              >
+                Moderation
+              </Link>
+            ) : null}
+            {loading ? null : user && user.role === "Admin" ? (
+              <Link
+                href="/admin"
+                className="relative text-[#22292F] font-medium transition-colors duration-200
+                  after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
+                  hover:text-[#29C7C9] hover:after:w-full"
+                onClick={() => setMenuOpen(false)}
+              >
+                Admin
               </Link>
             ) : null}
 

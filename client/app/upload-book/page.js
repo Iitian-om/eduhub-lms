@@ -44,7 +44,7 @@ export default function UploadBookPage() {
     if (!loading && !user) {
       // Redirect to login if not authenticated
       router.push("/login");
-    } else if (!loading && user && user.role !== "Admin" && user.role !== "Instructor") {
+    } else if (!loading && user && user.role !== "Admin" && user.role !== "Instructor" && user.role !== "Mod") {
       // Redirect to dashboard if user doesn't have required role
       router.push("/dashboard");
     }
@@ -162,7 +162,7 @@ export default function UploadBookPage() {
   // Loading and access control checks
   if (loading) return <div>Loading...</div>;
   if (!user) return null;
-  if (user.role !== "Admin" && user.role !== "Instructor") return null;
+  if (user.role !== "Admin" && user.role !== "Instructor" && user.role !== "Mod") return null;
 
   return (
     <div className="min-h-screen bg-[#F7F9FA] py-8">

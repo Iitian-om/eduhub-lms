@@ -11,6 +11,10 @@ const RATE_LIMITS = {
         limit: 5,
         windowMs: 30 * 60 * 1000,
     },
+    Mod: {
+        limit: 5,
+        windowMs: 30 * 60 * 1000,
+    },
 };
 
 // In-memory counters are enough for single-instance dev/prod setups.

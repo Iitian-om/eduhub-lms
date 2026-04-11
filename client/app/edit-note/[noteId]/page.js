@@ -58,7 +58,7 @@ export default function EditNotePage({ params }) {
         setCurrentFileUrl(note.fileUrl || '');
         
         // Check user permissions - only allow edit by admin or the user who uploaded it
-        if (user && (user.role !== 'Admin' && note.uploadedBy?._id !== user._id)) {
+        if (user && (user.role !== 'Admin' && user.role !== 'Mod' && note.uploadedBy?._id !== user._id)) {
           setError('You do not have permission to edit this note');
         }
         
