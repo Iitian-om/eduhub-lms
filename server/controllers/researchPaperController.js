@@ -259,6 +259,13 @@ export const deleteResearchPaper = async (req, res) => {
     try {
         const { id } = req.params;
 
+        if (req.user?.role === "Mod") {
+            return res.status(403).json({
+                success: false,
+                message: "Moderators are not allowed to delete research papers"
+            });
+        }
+
         const researchPaper = await ResearchPaper.findById(id);
 
         if (!researchPaper) {

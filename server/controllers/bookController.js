@@ -226,6 +226,13 @@ export const deleteBook = async (req, res) => {
     try {
         const { id } = req.params;
 
+        if (req.user?.role === "Mod") {
+            return res.status(403).json({
+                success: false,
+                message: "Moderators are not allowed to delete books"
+            });
+        }
+
         const book = await Book.findById(id);
         
         // Check if book with given id exists

@@ -5,19 +5,21 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { useUser } from "../context/UserContext";
 
-const navLinks = [
-  { href: "/about", label: "About" },
-  { href: "/courses", label: "Courses" },
-  { href: "/books", label: "Books" },
-  { href: "/notes", label: "Notes" },
-  { href: "/research-papers", label: "Research" },
-  { href: "/support", label: "Ask EduBuddy AI" },
-  { href: "/contact", label: "Contact" }
-];
-
 const Header = () => {
   const { user, loading } = useUser();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const guestLinks = [
+    { href: "/courses", label: "Courses" },
+    { href: "/contact", label: "Contact" },
+  ];
+
+  const memberLinks = [
+    { href: "/courses", label: "Courses" },
+    { href: "/support", label: "Ask EduBuddy AI" },
+  ];
+
+  const currentLinks = user ? memberLinks : guestLinks;
 
   return (
     <header className="bg-[#F7F9FA] shadow-md w-full border-b-2 border-[#29C7C9]">
@@ -39,8 +41,8 @@ const Header = () => {
         {/* Desktop Nav */}
         <nav className="hidden md:flex space-x-6 text-lg">
           {
-            // Mapping through navLinks to create desktop links
-            navLinks.map((link) => (
+            // Render minimal role-aware navigation links.
+            currentLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -52,16 +54,6 @@ const Header = () => {
               </Link>
             ))
           }
-          {loading ? null : user ? (
-            <Link
-              href="/profiles"
-              className="relative text-[#22292F] font-medium transition-colors duration-200
-                after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
-                hover:text-[#29C7C9] hover:after:w-full"
-            >
-              Profiles
-            </Link>
-          ) : null}
           {loading ? null : user && (user.role === "Admin" || user.role === "Mod") ? (
             <Link
               href="/moderation"
@@ -146,8 +138,7 @@ const Header = () => {
         <div className="md:hidden bg-[#F7F9FA] px-4 pb-4">
           <nav className="flex flex-col space-y-2">
             {
-              // Mapping through navLinks to create mobile links
-              navLinks.map((link) => (
+              currentLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -160,17 +151,6 @@ const Header = () => {
                 </Link>
               ))
             }
-            {loading ? null : user ? (
-              <Link
-                href="/profiles"
-                className="relative text-[#22292F] font-medium transition-colors duration-200
-                  after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
-                  hover:text-[#29C7C9] hover:after:w-full"
-                onClick={() => setMenuOpen(false)}
-              >
-                Profiles
-              </Link>
-            ) : null}
             {loading ? null : user && (user.role === "Admin" || user.role === "Mod") ? (
               <Link
                 href="/moderation"

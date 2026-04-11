@@ -262,6 +262,13 @@ export const deleteNote = async (req, res) => {
     try {
         const { id } = req.params;
 
+        if (req.user?.role === "Mod") {
+            return res.status(403).json({
+                success: false,
+                message: "Moderators are not allowed to delete notes"
+            });
+        }
+
         const note = await Note.findById(id);
 
         if (!note) {
