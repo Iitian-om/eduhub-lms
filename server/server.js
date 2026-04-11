@@ -19,6 +19,7 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import otherRoutes from "./routes/otherRoutes.js"; // General routes like root and /about or pages route.
 import pageNotFound from "./routes/pageNotFound.js"; // Middleware to handle 404 errors
 import adminRoutes from "./routes/adminRoutes.js";
+import supportRoutes from "./routes/supportRoutes.js";
 
 // --- Environment Variables Configuration ---
 dotenv.config(); // Make sure .env variables are loaded before anything else
@@ -64,6 +65,7 @@ app.use("/api/v1/notes", noteRoutes); // Note-related routes
 app.use("/api/v1/research-papers", researchPaperRoutes); // Research paper routes
 app.use("/api/v1/payment", paymentRoutes); // Payment routes
 app.use("/api/v1/admin", adminRoutes); // Admin routes
+app.use("/api/v1/support", supportRoutes); // Authenticated support chatbot route
 app.use("/", otherRoutes); // General routes like root and /about
 
 // --- Page Not Found Middleware --- This must be the last app.use() call for it to work correctly

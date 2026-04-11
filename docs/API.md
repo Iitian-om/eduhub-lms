@@ -188,7 +188,32 @@ GET    /api/v1/payment/history                  → Get payment history
 
 ---
 
-### 8. Admin Management (Admin Only)
+### 8. Support Chatbot
+Routes: `server/routes/supportRoutes.js`
+``` 
+POST   /api/v1/support/chatbot                  → Ask the EduHub support bot a question (auth required)
+```
+
+**Access rules**:
+- Requires a valid logged-in session
+- Allowed roles: `User`, `Instructor`, `Admin`
+- Rate limit: `User` and `Admin` get 5 messages per 30 minutes, `Instructor` gets 5 messages per hour
+
+**Cost controls**:
+- Short message limit to block oversized prompts
+- FAQ-style answers are served locally when possible
+- Live AI is only used when `OPENAI_API_KEY` is configured
+- Response generation is capped to a short completion
+
+**Environment variables**:
+- `OPENAI_API_KEY`
+- `OPENAI_API_URL` optional, defaults to the OpenAI chat completions endpoint
+- `OPENAI_MODEL` optional, defaults to `gpt-4o-mini`
+- Legacy aliases `AI_CHATBOT_API_KEY`, `AI_CHATBOT_API_URL`, and `AI_CHATBOT_MODEL` are still accepted for backwards compatibility
+
+---
+
+### 9. Admin Management (Admin Only)
 Routes: `server/routes/adminRoutes.js`
 
 **User Management**:
