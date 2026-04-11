@@ -3,6 +3,8 @@
 
 A modern, scalable and feature-rich Learning Management System (LMS) designed to unify digital education experiences for students, instructors, and administrators. EduHub streamlines course delivery, management, and analytics with a beautiful UI and powerful backend.
 
+Last updated: 2026-04-11
+
 ---
 
 ## 🚀 Project Vision
@@ -35,10 +37,12 @@ EduHub aims to be the go-to platform for digital learning, supporting interactiv
 ---
 
 ## 🌟 Core Features:
-- **Authentication**: JWT-based login/signup, role-based access (student, instructor, admin)
+- **Authentication**: JWT-based login/signup, role-based access (student, instructor, mod, admin)
 - **User Management**: Profile pages, dashboards, admin user control
 - **Course Management**: CRUD for courses, enrollment, instructor & student dashboards
 - **Content Delivery**: Video embedding (YouTube, edX, Coursera, etc.)
+- **AI Support Assistant**: EduHub-aware support chatbot with FAQ-first responses and Gemma via OpenRouter fallback
+- **Role-based Moderation**: Dedicated moderation workspace for `Admin` and `Mod`, with delete actions restricted to `Admin`
 - **Smart Dashboards**: Progress tracking, personalized recommendations (AI-powered, planned)
 - **Gamification**: Badges, XP, leaderboards (planned)
 - **Payment Integration**: Razorpay for paid courses (planned)
@@ -74,6 +78,8 @@ eduhub-lms/
 │   │   ├── context/        # React context (UserContext for auth state)
 │   │   ├── about/          # About page
 │   │   ├── dashboard/      # Dashboard page (protected)
+│   │   ├── support/        # AI support assistant page (protected)
+│   │   ├── moderation/     # Moderation workspace (Admin/Mod)
 │   │   ├── profile/        # User profile page (protected)
 │   │   ├── register/       # Registration page
 │   │   ├── login/          # Login page
@@ -92,11 +98,13 @@ eduhub-lms/
 │   ├── utils/              # Utility functions (DB connection, JWT, etc.)
 │   ├── server.js           # Main Express server entry point
 │   ├── package.json        # Backend dependencies and scripts
-│   └── .env                # Backend environment variables (not committed)
+│   ├── .env                # Backend environment variables (not committed)
+│   └── .env.example        # Backend environment template
 ├── eduhub-logo.png         # Logo used in README/UI
 ├── README.md
 ├── .gitignore
-└── package-lock.json
+├── pnpm-lock.yaml
+└── pnpm-workspace.yaml
 ```
 ---
 
@@ -114,6 +122,17 @@ _FunFact: I am the only one who made this despite my team had 5 members._
 
 ## 🤝 Acknowledgements: 
 LMS platform—built with ❤️ for the E-learners community. Thanks to all our Users!
+
+Third-party technologies and providers used in this project:
+- Google Gemma models (`gemma-2-9b-it`, `gemma-3-27b-it`) via OpenRouter
+- OpenRouter API gateway for LLM routing
+- Next.js and React for the frontend
+- Express.js and Mongoose for backend APIs and data modeling
+- MongoDB Atlas for primary database hosting
+- Cloudinary for media and file storage
+- Tailwind CSS and DaisyUI for UI styling
+- Recharts for analytics visualizations
+- Vercel and Render for deployment
 
 ---
 
