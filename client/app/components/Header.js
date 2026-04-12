@@ -12,14 +12,14 @@ const Header = () => {
   const pathname = usePathname();
 
   const guestLinks = [
-    { href: "/courses", label: "Courses" },
     { href: "/about", label: "About" },
+    { href: "/courses", label: "Courses" },
     { href: "/contact", label: "Contact" },
   ];
 
   const memberLinks = [
-    { href: "/courses", label: "Courses" },
     { href: "/about", label: "About" },
+    { href: "/courses", label: "Courses" },
     { href: "/support", label: "Ask EduBuddy AI" },
   ];
 

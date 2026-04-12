@@ -3,9 +3,7 @@
 
 A modern, scalable Learning Management System (LMS) evolving from a capstone project into an MVP, with a primary focus on digital resource management and sharing for students, educators, and institutions.
 
-Last updated: 2026-04-12
-
-Last updated: 2026-04-11
+<subscript><i>Last updated: 2026-04-13
 
 ---
 
@@ -127,16 +125,16 @@ _FunFact: I am the only one who made this despite my team had 5 members._
 ## 🤝 Acknowledgements: 
 LMS platform—built with ❤️ for the E-learners community. Thanks to all our Users!
 
-Third-party technologies and providers used in this project:
+Thanks to the Third-party technologies and providers as well who are used in this project:
 - Google Gemma models (`gemma-2-9b-it`, `gemma-3-27b-it`) via OpenRouter
-- OpenRouter API gateway for LLM routing
-- Next.js and React for the frontend
-- Express.js and Mongoose for backend APIs and data modeling
-- MongoDB Atlas for primary database hosting
-- Cloudinary for media and file storage
-- Tailwind CSS and DaisyUI for UI styling
-- Recharts for analytics visualizations
-- Vercel and Render for deployment
+- OpenRouter API gateway for LLM routing.
+- Next.js for the frontend.
+- Express.js and Mongoose for backend APIs and data modeling.
+- MongoDB Atlas for database hosting.
+- Cloudinary for media and file database like servicing.
+- Tailwind CSS and DaisyUI for UI styling.
+<!-- - Recharts for analytics visualizations -->
+- Vercel and Render for deployment.
 
 ---
 
