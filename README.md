@@ -1,15 +1,15 @@
 
 ![EduHub Logo](./client/public/eduhub-logo.png)
 
-A modern, scalable and feature-rich Learning Management System (LMS) designed to unify digital education experiences for students, instructors, and administrators. EduHub streamlines course delivery, management, and analytics with a beautiful UI and powerful backend.
+A modern, scalable Learning Management System (LMS) evolving from a capstone project into an MVP, with a primary focus on digital resource management and sharing for students, educators, and institutions.
 
-Last updated: 2026-04-11
+Last updated: 2026-04-12
 
 ---
 
 ## 🚀 Project Vision
 
-EduHub aims to be the go-to platform for digital learning, supporting interactive courses, smart content delivery, AI-powered recommendations, and secure payments—built for scalability and extensibility.
+EduHub aims to become a reliable academic resource hub where teams can curate, validate, and share notes, books, and research papers. Lightweight course capabilities are available, while monetization and marketplace features are planned for future phases.
 
 ---
 
@@ -39,7 +39,8 @@ EduHub aims to be the go-to platform for digital learning, supporting interactiv
 ## 🌟 Core Features:
 - **Authentication**: JWT-based login/signup, role-based access (student, instructor, mod, admin)
 - **User Management**: Profile pages, dashboards, admin user control
-- **Course Management**: CRUD for courses, enrollment, instructor & student dashboards
+- **Digital Resource Hub**: Centralized access and sharing for notes, books, and research papers via the new `resources` route
+- **Course Management (Lightweight)**: Basic course creation, enrollment, and dashboard flow (currently lower priority)
 - **Content Delivery**: Video embedding (YouTube, edX, Coursera, etc.)
 - **AI Support Assistant**: EduHub-aware support chatbot with FAQ-first responses and Gemma via OpenRouter fallback
 - **Role-based Moderation**: Dedicated moderation workspace for `Admin` and `Mod`, with delete actions restricted to `Admin`
@@ -51,11 +52,11 @@ EduHub aims to be the go-to platform for digital learning, supporting interactiv
 
 ## 🏗️ Development Roadmap
 
-1. **Core MVP**: Auth, course CRUD, dashboard UI, REST APIs
-2. **Smart Learning**: Video content, assignments/quizzes, progress tracking
-3. **AI Personalization**: Recommendations, learning paths
-4. **Analytics & Admin**: Admin panel, metrics dashboards
-5. **Deployment & Scaling**: CI/CD, Vercel/Netlify (frontend), Render/Heroku/Railway (backend), MongoDB Atlas.
+1. **Resource-First MVP**: Auth, role-based access, notes/books/papers workflows, resource discovery pages
+2. **Reliability & Governance**: Moderation, access quality, and safer file delivery
+3. **Learning Expansion**: Incremental improvements to course modules and learning journeys
+4. **AI & Analytics**: Better support intelligence and actionable platform insights
+5. **Monetization (Future)**: Selling and marketplace flows once infrastructure and scale are ready
 
 <!-- ## 📅 Project Phases
 See the attached [project plan](#) for a detailed breakdown, or refer to the summary below:
@@ -77,6 +78,7 @@ eduhub-lms/
 │   │   ├── components/     # Reusable React components (Header, Footer, etc.)
 │   │   ├── context/        # React context (UserContext for auth state)
 │   │   ├── about/          # About page
+│   │   ├── resources/      # Unified resource discovery page
 │   │   ├── dashboard/      # Dashboard page (protected)
 │   │   ├── support/        # AI support assistant page (protected)
 │   │   ├── moderation/     # Moderation workspace (Admin/Mod)

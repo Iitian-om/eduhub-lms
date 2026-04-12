@@ -1,5 +1,8 @@
 # Architecture Overview
 
+<subscript>Last updated: 2026-04-12 </subscript>
+
+
 EduHub LMS is a full-stack web application built with a modular, scalable architecture. It consists of two main components:
 
 ## 1. Frontend (client/)
@@ -9,7 +12,8 @@ EduHub LMS is a full-stack web application built with a modular, scalable archit
 - **State Management:** React Context API
 - **Features:**
   - Authentication (JWT, role-based)
-  - Course browsing, enrollment, dashboards
+  - Digital resource discovery and sharing (`/resources`, `/notes`, `/books`, `/research-papers`)
+  - Course browsing and enrollment (lightweight scope)
   - Profile management
   - Admin panel (analytics, reports)
   - Responsive UI
@@ -46,6 +50,11 @@ eduhub-lms/
 - Backend handles authentication, business logic, and data storage
 - Images/files are stored in Cloudinary
 - User sessions managed via JWT
+
+## 6. Current Product Direction
+- Resource-first MVP: notes, books, and research paper management is the primary focus.
+- Course management remains available but is currently lower priority due to budget and infrastructure limits.
+- Monetization/selling features are planned for future phases after stability and scale milestones.
 
 ---
 For more details, see the main project `README.md` and individual documentation files.

@@ -1,6 +1,6 @@
 # EduHub LMS Documentation
 
-Last updated: 2026-04-11
+Last updated: 2026-04-12
 
 Welcome to the documentation for EduHub LMS. This folder contains all technical and user documentation for the project.
 
@@ -12,7 +12,11 @@ Welcome to the documentation for EduHub LMS. This folder contains all technical 
 - [Installation & Setup](INSTALLATION.md)
 - [Architecture Overview](ARCHITECTURE.md)
 - [Contributing Guide](CONTRIBUTING.md)
-- [Changelog](CHANGELOG.md)
+
+## Latest Documentation Alignment (2026-04-12)
+- Home page messaging now emphasizes Digital Resource Hub workflows.
+- About page was expanded with detailed mission, roadmap, and professional usage flow.
+- New frontend route added: `/resources` (see `client/app/resources/page.js`).
 
 ## Getting Started
 See [INSTALLATION.md](INSTALLATION.md) for setup instructions.
