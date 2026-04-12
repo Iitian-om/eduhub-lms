@@ -4,91 +4,81 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useUser } from "../context/UserContext";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
   const { user, loading } = useUser();
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const guestLinks = [
     { href: "/courses", label: "Courses" },
+    { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
   ];
 
   const memberLinks = [
     { href: "/courses", label: "Courses" },
+    { href: "/about", label: "About" },
     { href: "/support", label: "Ask EduBuddy AI" },
   ];
 
   const currentLinks = user ? memberLinks : guestLinks;
+  const roleLinks = [];
+
+  if (!loading && user && (user.role === "Admin" || user.role === "Mod")) {
+    roleLinks.push({ href: "/moderation", label: "Moderation" });
+  }
+
+  if (!loading && user && user.role === "Admin") {
+    roleLinks.push({ href: "/admin", label: "Admin" });
+  }
+
+  const allLinks = [...currentLinks, ...roleLinks];
+
+  const navLinkClass = (href) => {
+    const isActive = pathname === href || pathname.startsWith(`${href}/`);
+    return `rounded-full px-3 py-2 text-sm font-semibold transition ${
+      isActive
+        ? "bg-[#29C7C9] text-white shadow-sm"
+        : "text-[#22313A] hover:bg-[#E7F8F8] hover:text-[#178E90]"
+    }`;
+  };
 
   return (
-    <header className="bg-[#F7F9FA] shadow-md w-full border-b-2 border-[#29C7C9]">
-      {/* Top Header */}
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-
-        {/* Link for Logo + HomePage */}
-        <Link href="/" className="flex items-center gap-2">
+    <header className="sticky top-0 z-40 border-b border-[#D6EEEF] bg-white/90 shadow-sm backdrop-blur-sm">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+        <Link href="/" className="flex items-center gap-2" aria-label="EduHub Home">
           <Image
             src="/eduhub-logo.png"
-            alt="EduHub Logo-bg removed"
-            width={100}
-            height={75}
+            alt="EduHub Logo"
+            width={92}
+            height={62}
             style={{ width: 'auto', height: 'auto' }}
             priority
           />
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex space-x-6 text-lg">
-          {
-            // Render minimal role-aware navigation links.
-            currentLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="relative text-[#22292F] font-medium transition-colors duration-200
-                after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
-                hover:text-[#29C7C9] hover:after:w-full"
-              >
-                {link.label}
-              </Link>
-            ))
-          }
-          {loading ? null : user && (user.role === "Admin" || user.role === "Mod") ? (
-            <Link
-              href="/moderation"
-              className="relative text-[#22292F] font-medium transition-colors duration-200
-                after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
-                hover:text-[#29C7C9] hover:after:w-full"
-            >
-              Moderation
+        <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
+          {allLinks.map((link) => (
+            <Link key={link.href} href={link.href} className={navLinkClass(link.href)}>
+              {link.label}
             </Link>
-          ) : null}
-          {loading ? null : user && user.role === "Admin" ? (
-            <Link
-              href="/admin"
-              className="relative text-[#22292F] font-medium transition-colors duration-200
-                after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
-                hover:text-[#29C7C9] hover:after:w-full"
-            >
-              Admin
-            </Link>
-          ) : null}
+          ))}
         </nav>
 
-        {/* User Profile / Login/Register Buttons */}
-        <div className="hidden md:flex space-x-4">
+        <div className="hidden items-center gap-3 md:flex">
           {loading ? null : user ? (
             <>
               <Link
                 href="/dashboard"
-                className="bg-white border border-[#29C7C9] text-[#29C7C9] px-4 py-2 rounded hover:bg-[#e0f7f7] transition"
+                className="rounded-full border border-[#7EDFE1] px-4 py-2 text-sm font-semibold text-[#177F81] transition hover:bg-[#E7F8F8]"
               >
                 Dashboard
               </Link>
               <Link
                 href="/profile"
-                className="bg-[#29C7C9] text-white px-4 py-2 rounded hover:bg-[#22b3b5] font-semibold transition"
+                className="rounded-full bg-[#29C7C9] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#22b3b5]"
               >
                 {user.name}
               </Link>
@@ -97,13 +87,13 @@ const Header = () => {
             <>
               <Link
                 href="/login"
-                className="bg-[#29C7C9] text-white px-4 py-2 rounded hover:bg-[#22b3b5] transition"
+                className="rounded-full bg-[#29C7C9] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#22b3b5]"
               >
                 Login
               </Link>
               <Link
                 href="/register"
-                className="bg-white border border-[#29C7C9] text-[#29C7C9] px-4 py-2 rounded hover:bg-[#e0f7f7] transition"
+                className="rounded-full border border-[#7EDFE1] px-4 py-2 text-sm font-semibold text-[#177F81] transition hover:bg-[#E7F8F8]"
               >
                 Register
               </Link>
@@ -111,14 +101,14 @@ const Header = () => {
           )}
         </div>
 
-        {/* Mobile Hamburger */}
         <button
-          className="md:hidden flex items-center"
+          className="flex items-center rounded-md p-1 text-[#29C7C9] transition hover:bg-[#E7F8F8] md:hidden"
           onClick={() => setMenuOpen((open) => !open)}
           aria-label="Toggle menu"
+          aria-expanded={menuOpen}
         >
           <svg
-            className="w-7 h-7 text-[#29C7C9]"
+            className="h-7 w-7"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -133,89 +123,55 @@ const Header = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
       {menuOpen && (
-        <div className="md:hidden bg-[#F7F9FA] px-4 pb-4">
-          <nav className="flex flex-col space-y-2">
-            {
-              currentLinks.map((link) => (
+        <div className="border-t border-[#D6EEEF] bg-white px-4 pb-5 pt-3 md:hidden">
+          <nav className="flex flex-col gap-2" aria-label="Mobile navigation">
+            {allLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="relative text-[#22292F] font-medium transition-colors duration-200
-                  after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
-                  hover:text-[#29C7C9] hover:after:w-full"
+                  className={navLinkClass(link.href)}
                   onClick={() => setMenuOpen(false)}
                 >
                   {link.label}
                 </Link>
-              ))
-            }
-            {loading ? null : user && (user.role === "Admin" || user.role === "Mod") ? (
-              <Link
-                href="/moderation"
-                className="relative text-[#22292F] font-medium transition-colors duration-200
-                  after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
-                  hover:text-[#29C7C9] hover:after:w-full"
-                onClick={() => setMenuOpen(false)}
-              >
-                Moderation
-              </Link>
-            ) : null}
-            {loading ? null : user && user.role === "Admin" ? (
-              <Link
-                href="/admin"
-                className="relative text-[#22292F] font-medium transition-colors duration-200
-                  after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#29C7C9] after:transition-all after:duration-300
-                  hover:text-[#29C7C9] hover:after:w-full"
-                onClick={() => setMenuOpen(false)}
-              >
-                Admin
-              </Link>
-            ) : null}
+              ))}
 
-            {
-              // Conditional rendering based on loading and user state
-              loading ? null : user ? (
-                // Links for logged in users
-                <>
-                  <Link
-                    href="/dashboard"
-                    className="bg-white border border-[#29C7C9] text-[#29C7C9] px-4 py-2 rounded hover:bg-[#e0f7f7] transition"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Dashboard
-                  </Link>
-                  <Link
-                    href="/profile"
-                    className="bg-[#29C7C9] text-white px-4 py-2 rounded hover:bg-[#22b3b5] font-semibold transition"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    {user.name}
-                  </Link>
-                </>
-              ) : (
-                // Buttons for getting started if not logged in
-                <>
-                  {/* Login Kink Button */}
-                  <Link
-                    href="/login"
-                    className="bg-[#29C7C9] text-white px-4 py-2 rounded hover:bg-[#22b3b5] transition"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Login
-                  </Link>
-                  {/* Register Link Button */}
-                  <Link
-                    href="/register"
-                    className="bg-white border border-[#29C7C9] text-[#29C7C9] px-4 py-2 rounded hover:bg-[#e0f7f7] transition"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Register
-                  </Link>
-                </>
-              )
-            }
+            {loading ? null : user ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="rounded-full border border-[#7EDFE1] px-4 py-2 text-center text-sm font-semibold text-[#177F81] transition hover:bg-[#E7F8F8]"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href="/profile"
+                  className="rounded-full bg-[#29C7C9] px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-[#22b3b5]"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {user.name}
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="rounded-full bg-[#29C7C9] px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-[#22b3b5]"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="rounded-full border border-[#7EDFE1] px-4 py-2 text-center text-sm font-semibold text-[#177F81] transition hover:bg-[#E7F8F8]"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       )}
