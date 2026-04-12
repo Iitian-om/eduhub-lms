@@ -101,14 +101,14 @@ export default function NoteListPage() {
    * - Includes admin/instructor controls when appropriate
    */
   return (
-    <div className="min-h-[80vh] bg-gray-50">
-      {/* Hero section with background */}
-      <div className="bg-gradient-to-r from-[#2AC9C7] to-[#2A8EC9] text-white py-12 px-4 mb-8">
-        <div className="max-w-6xl mx-auto">
+    <div className="min-h-[90vh] bg-[#F4FAFA]">
+      {/* Hero section */}
+      <div className="px-4 pt-10 sm:px-6 lg:px-8">
+        <div className="mx-auto mb-8 max-w-6xl rounded-3xl border border-[#CFE9EA] bg-gradient-to-br from-[#EAF8F8] via-white to-[#ECF6FF] px-6 py-10 shadow-sm">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div>
-              <h1 className="text-4xl font-bold mb-2">Notes Library</h1>
-              <p className="text-white/80 max-w-xl">
+              <h1 className="text-4xl font-bold mb-2 text-[#1B2A33]">Notes Library</h1>
+              <p className="text-[#4A6572] max-w-xl">
                 Explore educational notes and study materials to support your learning.
               </p>
             </div>
@@ -117,7 +117,7 @@ export default function NoteListPage() {
             {user && (user.role === "Admin" || user.role === "Instructor" || user.role === "Mod") && (
               <Link 
                 href="/upload-note" 
-                className="mt-6 md:mt-0 bg-white text-[#2AC9C7] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition flex items-center shadow-lg"
+                className="mt-6 md:mt-0 bg-[#29C7C9] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#22b6b7] transition flex items-center shadow-sm"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -129,7 +129,7 @@ export default function NoteListPage() {
         </div>
       </div>
       
-      <div className="max-w-6xl mx-auto px-4 pb-12">
+      <div className="max-w-6xl mx-auto px-4 pb-12 sm:px-6 lg:px-8">
         {/* Action messages (success/error) */}
         {actionMessage.text && (
           <div className={`mb-6 p-4 rounded-lg shadow-sm ${
@@ -202,17 +202,17 @@ export default function NoteListPage() {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
               {notes.map((note) => (
-                <div key={note._id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col border border-gray-100">
+                <div key={note._id} className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col border border-[#D7ECEE]">
                   {/* Note header */}
                   <div className="relative pt-3">
-                    <div className="absolute top-0 right-0 bg-[#2AC9C7]/10 text-[#2AC9C7] py-1 px-4 text-xs font-semibold">
+                    <div className="absolute top-0 right-0 bg-[#2AC9C7]/10 text-[#2AC9C7] py-1 px-4 text-xs font-semibold rounded-bl-xl">
                       {note.type}
                     </div>
                     <div className="px-5 mb-3">
                       <span className="inline-block px-3 py-1 bg-[#2AC9C7]/10 text-[#2AC9C7] text-xs font-semibold rounded-full mb-2">
                         {note.subject}
                       </span>
-                      <h2 className="text-xl font-bold text-gray-800 line-clamp-1">{note.title}</h2>
+                      <h2 className="text-xl font-bold text-[#1B2A33] line-clamp-1">{note.title}</h2>
                       {note.course && (
                         <p className="text-gray-600 text-sm">
                           Course: {note.course.title || 'Untitled Course'}
@@ -223,13 +223,13 @@ export default function NoteListPage() {
                   
                   {/* Note content */}
                   <div className="p-5 flex-grow">
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-3">{note.description}</p>
+                    <p className="text-[#4A6572] text-sm mb-4 line-clamp-3">{note.description}</p>
                     
                     {/* Tags */}
                     {note.tags && note.tags.length > 0 && (
                       <div className="flex flex-wrap gap-1 mb-4">
                         {note.tags.map((tag, index) => (
-                          <span key={index} className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">
+                          <span key={index} className="bg-[#F3FBFB] text-[#4A6572] text-xs px-2 py-0.5 rounded-full">
                             #{tag}
                           </span>
                         ))}
@@ -265,7 +265,7 @@ export default function NoteListPage() {
                     </div>
 
                     {/* Upload info with icons */}
-                    <div className="text-xs text-gray-500 space-y-1 mt-3">
+                    <div className="text-xs text-[#6A808A] space-y-1 mt-3">
                       {note.uploadedBy?.name && (
                         <p className="flex items-center">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -286,14 +286,14 @@ export default function NoteListPage() {
                   </div>
                   
                   {/* Actions footer */}
-                  <div className="px-5 py-4 bg-gray-50 border-t border-gray-100">
+                  <div className="px-5 py-4 bg-[#F8FEFE] border-t border-[#D7ECEE]">
                     {/* Download button if file exists */}
                     {note.fileUrl && (note.contentType === 'file' || note.contentType === 'both') && (
                       <a
                         href={note.fileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block w-full bg-[#2AC9C7] text-white text-center py-2 rounded-lg hover:bg-[#28B8B6] transition mb-2 font-medium flex items-center justify-center"
+                        className="block w-full bg-[#2AC9C7] text-white text-center py-2 rounded-full hover:bg-[#28B8B6] transition mb-2 font-medium flex items-center justify-center"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -306,7 +306,7 @@ export default function NoteListPage() {
                     {(note.contentType === 'manual' || note.contentType === 'both') && note.richTextContent && (
                       <a
                         href={`/view-note/${note._id}`}
-                        className="block w-full bg-blue-500 text-white text-center py-2 rounded-lg hover:bg-blue-600 transition mb-2 font-medium flex items-center justify-center"
+                        className="block w-full bg-blue-500 text-white text-center py-2 rounded-full hover:bg-blue-600 transition mb-2 font-medium flex items-center justify-center"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -321,7 +321,7 @@ export default function NoteListPage() {
                       <div className="flex gap-2 mt-2">
                         <Link 
                           href={`/edit-note/${note._id}`}
-                          className="flex-1 text-center px-3 py-1.5 border border-[#2AC9C7] text-[#2AC9C7] rounded-lg hover:bg-[#2AC9C7]/10 transition flex items-center justify-center text-sm"
+                          className="flex-1 text-center px-3 py-1.5 border border-[#2AC9C7] text-[#2AC9C7] rounded-full hover:bg-[#2AC9C7]/10 transition flex items-center justify-center text-sm"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -330,7 +330,7 @@ export default function NoteListPage() {
                         </Link>
                         <button
                           onClick={() => handleDeleteNote(note._id)}
-                          className={`flex-1 px-3 py-1.5 rounded-lg transition flex items-center justify-center text-sm ${
+                          className={`flex-1 px-3 py-1.5 rounded-full transition flex items-center justify-center text-sm ${
                             deleteConfirmId === note._id
                               ? 'bg-red-600 text-white hover:bg-red-700'
                               : 'border border-red-400 text-red-600 hover:bg-red-50'

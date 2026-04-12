@@ -60,75 +60,80 @@ export default function ProfilePage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-[90vh] bg-[#F7F9FA] flex flex-col items-center px-2 py-4">
-      {/* Upper Profile Div */}
-      <div className="w-full max-w-5xl bg-white rounded-2xl shadow-lg p-8 flex flex-col sm:flex-row items-center gap-8 mb-10 profile-div">
-        {/* Profile Picture */}
-        <div className="flex-shrink-0">
-          {user.profile_picture ? (
-            <img
-              src={user.profile_picture.startsWith('http') ? user.profile_picture : `${API_BASE_URL}${user.profile_picture}`}
-              alt="Profile"
-              className="w-28 h-28 rounded-full object-cover border-4 border-[#29C7C9] shadow"
-              onError={(e) => {
-                console.log("Image failed to load:", e.target.src);
-                e.target.style.display = 'none';
-                e.target.nextSibling.style.display = 'flex';
-              }}
-            />
-          ) : null}
-          <div className={`w-28 h-28 rounded-full bg-[#29C7C9] flex items-center justify-center text-white text-4xl font-bold border-4 border-[#29C7C9] shadow ${user.profile_picture ? 'hidden' : ''}`}>
-            {user.name.charAt(0)}
+    <main className="min-h-[90vh] bg-[#F4FAFA] px-4 py-10 text-[#22313A] sm:px-6 lg:px-8">
+      {/* Profile overview hero */}
+      <section className="mx-auto mb-8 w-full max-w-6xl rounded-3xl border border-[#CFE9EA] bg-gradient-to-br from-[#EAF8F8] via-white to-[#ECF6FF] p-8 shadow-sm sm:p-10">
+        <div className="flex flex-col gap-8 sm:flex-row sm:items-center">
+          {/* Profile avatar */}
+          <div className="flex-shrink-0">
+            {user.profile_picture ? (
+              <img
+                src={user.profile_picture.startsWith('http') ? user.profile_picture : `${API_BASE_URL}${user.profile_picture}`}
+                alt="Profile"
+                className="h-28 w-28 rounded-full border-4 border-[#29C7C9] object-cover shadow"
+                onError={(e) => {
+                  console.log("Image failed to load:", e.target.src);
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+            ) : null}
+            <div className={`h-28 w-28 rounded-full border-4 border-[#29C7C9] bg-[#29C7C9] text-white shadow flex items-center justify-center text-4xl font-bold ${user.profile_picture ? 'hidden' : ''}`}>
+              {user.name.charAt(0)}
+            </div>
           </div>
-        </div>
-        {/* Profile Info */}
-        <div className="flex-1 flex flex-col gap-1 w-full">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-            <span className="text-2xl font-bold text-[#22292F]">{user.name}</span>
-            <span className="text-gray-500 text-lg">- @{user.userName}</span>
-          </div>
-          <span className="inline-block bg-[#E6F7F8] text-[#29C7C9] px-3 py-1 rounded-full text-xs font-semibold mt-1 mb-1 capitalize w-fit">{user.role}</span>
-          <span className="text-gray-700 text-sm mb-1">{user.email}</span>
-          {user.location && (
-            <span className="text-gray-700 text-sm mb-1">📍 {user.location}</span>
-          )}
-          <p className="text-gray-600 text-sm mb-2 max-w-xl break-words">{user.bio || <span className="italic text-gray-400">No bio provided.</span>}</p>
-          <div className="flex flex-wrap gap-3 mt-2">
-            <Link href="/profile/edit" className="bg-[#29C7C9] text-white px-5 py-2 rounded-lg font-semibold hover:bg-[#22b6b7] transition">
-              Edit Profile
-            </Link>
-            <Link href="/dashboard" className="bg-[#F7D774] text-[#22292F] px-5 py-2 rounded-lg font-semibold hover:bg-[#ffe9a7] transition border border-[#f7d774]">Go to Dashboard</Link>
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 text-white px-5 py-2 rounded-lg font-semibold hover:bg-red-600 transition"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </div>
 
-      {/* Bottom Enrolled Courses Div */}
-      <div className="w-full max-w-5xl bg-white rounded-2xl shadow p-8 mt-2">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-bold text-[#29C7C9]">Enrolled Courses ({enrolledCourses.length})</h3>
-          <div className="text-sm text-gray-600">
+          {/* Profile identity and actions */}
+          <div className="flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-3xl font-bold text-[#1B2A33]">{user.name}</h1>
+              <span className="text-lg text-[#5B7480]">@{user.userName}</span>
+            </div>
+            <span className="mt-2 inline-block rounded-full bg-white px-3 py-1 text-xs font-semibold capitalize text-[#178E90] border border-[#BFE9EA]">{user.role}</span>
+            <p className="mt-2 text-sm text-[#415E6B]">{user.email}</p>
+            {user.location && <p className="mt-1 text-sm text-[#415E6B]">Location: {user.location}</p>}
+            <p className="mt-3 max-w-2xl text-sm text-[#4A6572]">{user.bio || <span className="italic text-[#8197A1]">No bio provided yet.</span>}</p>
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href="/profile/edit" className="rounded-full bg-[#29C7C9] px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#22b6b7]">
+                Edit Profile
+              </Link>
+              <Link href="/dashboard" className="rounded-full border border-[#29C7C9] bg-white px-5 py-2 text-sm font-semibold text-[#178E90] transition hover:bg-[#E7F8F8]">
+                Go to Dashboard
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="rounded-full bg-red-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-600"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Enrolled courses section */}
+      <section className="mx-auto w-full max-w-6xl rounded-2xl border border-[#D7ECEE] bg-white p-8 shadow-sm">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-2xl font-bold text-[#1B2A33]">Enrolled Courses ({enrolledCourses.length})</h2>
+          <div className="rounded-full border border-[#D9EFF0] bg-[#F6FCFC] px-3 py-1 text-sm text-[#46606D]">
             Completed: {user.Courses_Completed?.length || 0}
           </div>
         </div>
+
         {coursesLoading ? (
-          // Loading animation while loading the coureses
+          // Loading state
           <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#29C7C9] mx-auto"></div>
-            <p className="mt-2 text-gray-600">Loading your courses...</p>
+            <p className="mt-2 text-[#4A6572]">Loading your courses...</p>
           </div>
-        ) : enrolledCourses.length > 0 ? ( 
-          // Display enrolled courses
+        ) : enrolledCourses.length > 0 ? (
+          // Courses grid
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {enrolledCourses.map((course) => (
-              <div key={course._id} className="bg-[#E6F7F8] rounded-lg p-4 shadow flex flex-col">
+              <div key={course._id} className="rounded-xl border border-[#D8ECEE] bg-[#F8FEFE] p-5 flex flex-col">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-semibold text-[#22292F] text-lg">{course.title}</span>
+                  <span className="font-semibold text-[#1B2A33] text-lg">{course.title}</span>
                   <div className="flex gap-1">
                     <span className="text-xs bg-green-500 text-white px-2 py-1 rounded">Enrolled</span>
                     {user.Courses_Completed?.includes(course._id) && (
@@ -136,19 +141,19 @@ export default function ProfilePage() {
                     )}
                   </div>
                 </div>
-                <p className="text-gray-600 text-sm mb-2 line-clamp-2">{course.description}</p>
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span>👨‍🏫 {course.instructor}</span>
-                  <span>⏱️ {course.duration}</span>
+                <p className="text-[#4A6572] text-sm mb-2 line-clamp-2">{course.description}</p>
+                <div className="flex items-center justify-between text-xs text-[#6A808A]">
+                  <span>Instructor: {course.instructor}</span>
+                  <span>Duration: {course.duration}</span>
                 </div>
-                <div className="flex items-center justify-between text-xs text-gray-500 mt-1">
+                <div className="flex items-center justify-between text-xs text-[#6A808A] mt-1">
                   <span>Level: {course.level}</span>
                   <span>Category: {course.category}</span>
                 </div>
                 <div className="mt-3">
                   <button 
                     onClick={() => router.push(`/coursePage/${course._id}`)}
-                    className="w-full bg-[#29C7C9] text-white py-2 rounded-lg font-medium hover:bg-[#22b3b5] transition text-sm"
+                    className="w-full rounded-full bg-[#29C7C9] text-white py-2 font-medium hover:bg-[#22b3b5] transition text-sm"
                   >
                     Continue Learning
                   </button>
@@ -156,16 +161,17 @@ export default function ProfilePage() {
               </div>
             ))}
           </div>
-        ) : ( // No courses enrolled in message
+        ) : (
+          // Empty state
           <div className="text-center py-8">
             <div className="text-4xl mb-4">📚</div>
-            <p className="text-gray-500 mb-4">You are not enrolled in any courses yet.</p>
-            <Link href="/courses" className="bg-[#29C7C9] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#22b3b5] transition">
+            <p className="text-[#6A808A] mb-4">You are not enrolled in any courses yet.</p>
+            <Link href="/courses" className="rounded-full bg-[#29C7C9] text-white px-6 py-3 font-medium hover:bg-[#22b3b5] transition">
               Browse Courses
             </Link>
           </div>
         )}
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
