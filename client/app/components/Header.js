@@ -15,6 +15,8 @@ const Header = () => {
     { href: "/about", label: "About" },
     { href: "/courses", label: "Courses" },
     { href: "/contact", label: "Contact" },
+    { href: "/resources", label: "Resources" },
+    { href: "/profiles", label: "Profiles" }
   ];
 
   const memberLinks = [
