@@ -72,111 +72,161 @@ export default function ProfilesPage() {
     setPage(1);
   };
 
-  if (loading) return <div className="min-h-[60vh] flex items-center justify-center">Loading...</div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center bg-[#F4FAFA]">Loading...</div>;
   if (!user) return null;
 
   return (
-    <div className="min-h-[90vh] bg-[#F7F9FA] px-4 py-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-[#22292F]">Learn in Public</h1>
-          <p className="text-gray-600 mt-1">Discover students, instructors, moderators, and admins in EduHub.</p>
-        </div>
+    <div className="min-h-screen bg-[#F4FAFA] px-4 py-12">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Profiles Hero Section */}
+        <section className="rounded-3xl border border-[#CFE9EA] bg-gradient-to-br from-[#EAF8F8] via-white to-[#ECF6FF] p-8 shadow-sm">
+          <h1 className="text-4xl md:text-5xl font-bold text-[#1B2A33] mb-2">Learn in Public</h1>
+          <p className="text-lg text-[#4A6572] mb-6">
+            Discover students, instructors, and educators in the EduHub community. Connect, collaborate, and grow together.
+          </p>
+        </section>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
-          <form onSubmit={onSearchSubmit} className="flex flex-col md:flex-row gap-3">
+        {/* Search & Filter Form */}
+        <form onSubmit={onSearchSubmit} className="bg-white rounded-2xl border border-[#D7ECEE] shadow-md p-6">
+          <div className="flex flex-col md:flex-row gap-4">
             <input
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Search by name or username"
-              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#29C7C9]"
+              placeholder="🔍 Search by name or username"
+              className="input input-bordered flex-1 bg-[#F4FAFA] border-[#D7ECEE] text-[#1B2A33] focus:outline-none focus:border-[#29C7C9] focus:ring-2 focus:ring-[#29C7C9] focus:ring-opacity-20"
             />
             <select
               value={role}
               onChange={onRoleChange}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#29C7C9]"
+              className="select select-bordered bg-[#F4FAFA] border-[#D7ECEE] text-[#1B2A33] focus:outline-none focus:border-[#29C7C9]"
             >
               <option value="all">All roles</option>
-              <option value="User">User</option>
+              <option value="User">Student</option>
               <option value="Instructor">Instructor</option>
-              <option value="Mod">Mod</option>
+              <option value="Mod">Moderator</option>
               <option value="Admin">Admin</option>
             </select>
-            <button type="submit" className="bg-[#29C7C9] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#22b6b7]">
+            <button type="submit" className="btn bg-[#29C7C9] hover:bg-[#178E90] text-white border-none rounded-full w-full md:w-auto">
               Search
             </button>
-          </form>
-        </div>
-
-        {fetching ? (
-          <div className="text-center text-gray-600 py-10">Loading profiles...</div>
-        ) : profiles.length === 0 ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center text-gray-500">
-            No profiles found.
           </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        </form>
+
+        {/* Loading State */}
+      {fetching ? (
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-10 w-10 border-4 border-[#D7ECEE] border-t-[#29C7C9] mx-auto mb-3"></div>
+          <p className="text-[#4A6572]">Discovering profiles...</p>
+        </div>
+      ) : profiles.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-[#D7ECEE] shadow-sm p-8 text-center">
+          <div className="text-5xl mb-4">👥</div>
+          <p className="text-[#4A6572] text-lg">No profiles found matching your search.</p>
+        </div>
+      ) : (
+        <>
+          {/* Profiles Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {profiles.map((profile) => (
-              <div key={profile._id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <div className="flex items-center gap-3 mb-3">
-                  {profile.profile_picture ? (
-                    <img src={profile.profile_picture} alt={profile.name} className="w-14 h-14 rounded-full object-cover border-2 border-[#29C7C9]" />
-                  ) : (
-                    <div className="w-14 h-14 rounded-full bg-[#29C7C9] text-white flex items-center justify-center text-xl font-bold">
-                      {profile.name?.charAt(0) || "U"}
+              <div key={profile._id} className="card bg-white border border-[#D7ECEE] shadow-md hover:shadow-lg hover:border-[#29C7C9] transition-all">
+                <div className="card-body">
+                  {/* Profile Header */}
+                  <div className="flex items-start gap-4 mb-4 pb-4 border-b border-[#D7ECEE]">
+                    {profile.profile_picture ? (
+                      <img src={profile.profile_picture} alt={profile.name} className="w-16 h-16 rounded-full object-cover border-2 border-[#29C7C9]" />
+                    ) : (
+                      <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#29C7C9] to-[#178E90] text-white flex items-center justify-center text-2xl font-bold flex-shrink-0">
+                        {profile.name?.charAt(0) || "U"}
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <h3 className="font-bold text-[#1B2A33] text-lg">{profile.name}</h3>
+                      <p className="text-sm text-[#4A6572]">@{profile.userName}</p>
+                      <div className="mt-2">
+                        <span className={`badge gap-2 border-none font-medium
+                            ${profile.role === 'Admin' ? 'bg-red-100 text-red-700' :
+                            profile.role === 'Instructor' ? 'bg-indigo-100 text-indigo-700' :
+                              profile.role === 'Mod' ? 'bg-amber-100 text-amber-700' :
+                                'bg-[#EAF8F8] text-[#29C7C9]'
+                          }
+                          `}>
+                          {profile.role}
+                        </span>
+                      </div>
                     </div>
-                  )}
-                  <div>
-                    <h3 className="font-semibold text-[#22292F]">{profile.name}</h3>
-                    <p className="text-sm text-gray-500">@{profile.userName}</p>
-                    <span className="inline-block text-xs bg-[#E6F7F8] text-[#29C7C9] mt-1 px-2 py-1 rounded-full">{profile.role}</span>
                   </div>
-                </div>
-                <p className="text-sm text-gray-600 min-h-10">{profile.bio || "No bio added yet."}</p>
-                <p className="text-xs text-gray-500 mt-2">{profile.location ? `Location: ${profile.location}` : "Location not added"}</p>
-                <div className="mt-3 text-xs text-gray-600 flex gap-3">
-                  <span>Enrolled: {profile.stats?.enrolledCourses || 0}</span>
-                  <span>Done: {profile.stats?.completedCourses || 0}</span>
-                </div>
-                <div className="flex gap-2 mt-4">
-                  <Link href={`/profiles/${profile.userName}`} className="flex-1 text-center bg-[#29C7C9] text-white py-2 rounded-lg text-sm font-medium hover:bg-[#22b6b7]">
-                    View Profile
-                  </Link>
-                  <button
-                    disabled
-                    className="flex-1 border border-[#29C7C9] text-[#29C7C9] py-2 rounded-lg text-sm font-medium cursor-not-allowed opacity-60"
-                    title="Connect feature coming soon"
-                  >
-                    Connect
-                  </button>
+
+                  {/* Profile Info */}
+                  <p className="text-sm text-[#4A6572] min-h-12 mb-3">{profile.bio || "No bio added yet."}</p>
+
+                  {profile.location && (
+                    <p className="text-xs text-[#6A808A]">📍 {profile.location}</p>
+                  )}
+
+                  {/* Stats */}
+                  <div className="divider my-3"></div>
+                  <div className="stats stats-vertical w-full bg-[#F4FAFA] border border-[#D7ECEE]">
+                    <div className="stat">
+                      <div className="stat-title text-[#4A6572] text-xs">Enrolled</div>
+                      <div className="stat-value text-[#29C7C9] text-lg">{profile.stats?.enrolledCourses || 0}</div>
+                    </div>
+                    <div className="stat">
+                      <div className="stat-title text-[#4A6572] text-xs">Completed</div>
+                      <div className="stat-value text-emerald-600 text-lg">{profile.stats?.completedCourses || 0}</div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="card-actions justify-stretch mt-4 gap-2">
+                    <Link href={`/profiles/${profile.userName}`} className="btn btn-sm flex-1 bg-[#29C7C9] hover:bg-[#178E90] text-white border-none rounded-lg">
+                      View Profile
+                    </Link>
+                    <button
+                      disabled
+                      className="btn btn-sm flex-1 border border-[#D7ECEE] text-[#4A6572] cursor-not-allowed opacity-60 rounded-lg"
+                      title="Connect feature coming soon"
+                    >
+                      Connect
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-        )}
 
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-6">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className="px-3 py-2 rounded border border-gray-300 text-sm disabled:opacity-50"
-            >
-              Prev
-            </button>
-            <span className="text-sm text-gray-600">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page === totalPages}
-              className="px-3 py-2 rounded border border-gray-300 text-sm disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
-        )}
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-3 mt-8">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="btn btn-sm btn-outline border-[#29C7C9] text-[#29C7C9] hover:bg-[#EAF8F8] disabled:opacity-50"
+              >
+                ← Previous
+              </button>
+              <div className="join">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                  <button
+                    key={pageNum}
+                    onClick={() => setPage(pageNum)}
+                    className={`join-item btn btn-xs ${page === pageNum ? 'btn-active bg-[#29C7C9] border-[#29C7C9]' : 'border-[#D7ECEE] hover:border-[#29C7C9]'}`}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="btn btn-sm btn-outline border-[#29C7C9] text-[#29C7C9] hover:bg-[#EAF8F8] disabled:opacity-50"
+              >
+                Next →
+              </button>
+            </div>
+          )}
+        </>
+      )}
       </div>
     </div>
   );

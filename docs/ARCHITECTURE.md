@@ -1,7 +1,7 @@
 # Architecture Overview
 
-<subscript>Last updated: 2026-04-12 </subscript>
-
+<subsript>**Last Updated:** April 13, 2026 </subscript>
+<subscript>**Version:** 1.4.1 </subscript>
 
 EduHub LMS is a full-stack web application built with a modular, scalable architecture. It consists of two main components:
 
@@ -51,7 +51,42 @@ eduhub-lms/
 - Images/files are stored in Cloudinary
 - User sessions managed via JWT
 
-## 6. Current Product Direction
+## 6. Frontend Design System (v1.2.0 - April 13, 2026)
+
+A comprehensive, DaisyUI-integrated design system has been implemented across all public-facing and admin pages to ensure visual consistency, accessibility, and professional UX standards.
+
+### Key Design Elements
+- **Color Palette:** Custom aqua/teal theme with semantic colors
+  - Primary: `#29C7C9` (aqua)
+  - Backgrounds: `#F4FAFA` (light teal-tinted white)
+  - Text: `#1B2A33` (dark), `#4A6572` (secondary), `#6A808A` (muted)
+  
+- **Component Library:** DaisyUI 4.12.24
+  - Buttons (primary, secondary, destructive, rounded-full, enhanced sizing in v1.2.0)
+  - Cards with consistent borders and shadows (improved in v1.2.0)
+  - Hero sections with gradient backgrounds
+  - Stats cards with enhanced visibility (v1.2.0: border-2, text-4xl values)
+  - Form inputs, tabs, modals, badges
+  - Responsive grid layouts
+
+- **Typography:** Semantic heading hierarchy with consistent spacing and line heights
+- **Responsive Design:** Mobile-first approach with Tailwind breakpoints (sm, md, lg, xl)
+- **Accessibility:** WCAG AA compliance, focus states, semantic HTML
+
+### Latest Changes (v1.2.0)
+- **Button Enhancements:** Dashboard hero buttons enlarged to `btn-lg`, added padding and shadows
+- **Stats Card Redesign:** White backgrounds, border-2 styling, text-4xl values, enhanced spacing
+- **Header Navigation:** Added role-gated Moderation and Admin links
+- **Quality Improvements:** Better visibility, contrast, and visual hierarchy across components
+
+### Pages Implementing v1.2.0 Design System
+- Dashboard (button + stats enhancements)
+- Profiles, Content Review/Moderation (refinements)
+- Homepage, About, Profile, Contact, Courses, Notes, Books, Research Papers, Privacy, Terms
+
+**For complete design documentation**, see [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md).
+
+## 7. Current Product Direction
 - Resource-first MVP: notes, books, and research paper management is the primary focus.
 - Course management remains available but is currently lower priority due to budget and infrastructure limits.
 - Monetization/selling features are planned for future phases after stability and scale milestones.
