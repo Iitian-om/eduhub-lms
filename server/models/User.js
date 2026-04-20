@@ -9,18 +9,18 @@ const userSchema = new mongoose.Schema({ // Schema is a blueprint for the struct
     },
     userName: {
         type: String,
-        trim: true, // Remove whitespace from both ends
-        unique: true,
+        trim: true,         // Remove whitespace from both ends
+        unique: true,       // Ensure username is unique across the collection at the time of creation
         required: true,
-        lowercase: true, // Convert to lowercase for case-insensitive uniqueness
+        lowercase: true,    // Convert to lowercase for case-insensitive uniqueness
         minLength: [3, "Username must be at least 3 characters long"],
         maxLength: [15, "Username can't exceed 20 characters"]
     },
     email: {
         type: String,
         required: true,
-        unique: true,
-        trim: true, // Remove whitespace from both ends
+        unique: true,       // Ensure email is unique across the collection at the time of creation
+        trim: true,         // Remove whitespace from both ends
     },
     password: {
         type: String,
@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({ // Schema is a blueprint for the struct
     },
     profile_picture: {
         type: String,
-        default: "", // Cloudinary URL
+        default: "", // Will store Cloudinary URL
     },
     role: {
         type: String,
