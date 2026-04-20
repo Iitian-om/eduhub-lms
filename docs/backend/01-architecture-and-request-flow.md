@@ -2,11 +2,11 @@
 
 ## Big picture
 
-EduHub backend follows a standard layered flow:
+Current backend flow:
 
-Client -> Route -> Middleware -> Controller -> Model/Utils -> Response
+Client -> Express route -> Middleware chain -> Controller -> Model/Utility -> Response
 
-## Main backend folders
+## Backend folders
 
 - Routes: [server/routes](../../server/routes)
 - Controllers: [server/controllers](../../server/controllers)
@@ -14,72 +14,50 @@ Client -> Route -> Middleware -> Controller -> Model/Utils -> Response
 - Middlewares: [server/middlewares](../../server/middlewares)
 - Utils: [server/utils](../../server/utils)
 
-## Step-by-step request lifecycle
+## Runtime sequence
 
-1. Request enters Express app
-- Entry file: [server/server.js](../../server/server.js)
-- JSON body parsing and cookie parsing happen first.
+1. Express app starts from [server/server.js](../../server/server.js)
+2. Global middleware runs:
+   - `express.json()`
+   - `cookieParser()`
+   - `cors(...)`
+   - static uploads path
+3. Route prefix is matched (`/api/v1/...`)
+4. Route middlewares run (auth, role checks, upload checks, rate limits)
+5. Controller executes business logic
+6. Mongoose models perform DB operations
+7. JSON or text response is returned
 
-2. CORS check
-- Allowed origins are validated before route logic.
+## Current security layers
 
-3. Route match
-- Express chooses the route module by prefix, like /api/v1/books.
+- JWT verification in [server/middlewares/auth.js](../../server/middlewares/auth.js)
+- Role access checks using `authorizeRoles`
+- PDF-only upload filter and size limits in [server/middlewares/fileUpload.js](../../server/middlewares/fileUpload.js)
+- Chatbot request throttling by role in [server/middlewares/chatbotRateLimit.js](../../server/middlewares/chatbotRateLimit.js)
 
-4. Route-level middleware
-- Example middleware sequence:
-  - auth check (`isAuthenticated`)
-  - role check (`authorizeRoles`)
-  - upload validation (`multer` middleware)
+## Important current behavior notes
 
-5. Controller logic
-- Controller validates input
-- uses models for DB operations
-- uses utils for shared logic (JWT, Cloudinary URLs, etc.)
+NOTE:
 
-6. DB / cloud call
-- MongoDB via Mongoose models
-- Cloudinary for file upload/download URL generation
+- Book/Note/ResearchPaper list and detail endpoints currently return stored `fileUrl` values directly from DB.
+- The utility folder currently has no `cloudinaryDownload.js` helper file.
+- Support chatbot route uses both role authorization and rate limiting middleware.
 
-7. Response sent
-- JSON with `success`, `message`, and data payload.
+## Example request flow (upload note)
 
-## Why this split is useful
+1. POST `/api/v1/notes`
+2. `isAuthenticated` ensures user is logged in
+3. `uploadNote` validates PDF and stores file in memory buffer
+4. `handleFileUploadError` handles multer errors
+5. `createNote` uploads to Cloudinary and saves note in MongoDB
+6. Controller returns created note JSON
 
-WHY:
-- Routes stay clean (only endpoint mapping)
-- Controllers own business logic
-- Models define data structure
-- Middlewares handle reusable request checks
-- Utils avoid repeated helper code
-
-## Typical example (book upload)
-
-1. POST /api/v1/books
-2. Route calls upload middleware (validates PDF)
-3. Route calls auth middleware (must be logged in)
-4. Controller uploads file to Cloudinary
-5. Controller saves metadata in Book model
-6. Response returns created book object
-
-## Typical example (book list)
-
-1. GET /api/v1/books
-2. Controller fetches public books from MongoDB
-3. Controller applies accessible file URL helper
-4. Response returns list + pagination
-
-## Security building blocks in this backend
-
-- JWT auth stored in httpOnly cookies
-- role-based guards (Admin/Mod/Instructor/User)
-- upload file type + file size checks
-- private/signed Cloudinary download links for protected delivery
-
-## Newbie mental model
+## Debug order for beginners
 
 TIP:
-- If request is rejected early, look at middleware first.
-- If request reaches controller but fails, check controller validation.
-- If schema error appears, check model rules.
-- If URL/download issue appears, check cloudinary utility functions.
+
+1. Check route and path first
+2. Check middleware rejection (401/403/400)
+3. Check controller validation
+4. Check model schema validation
+5. Check external service calls (Cloudinary/OpenRouter)

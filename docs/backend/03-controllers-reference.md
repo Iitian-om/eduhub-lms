@@ -1,241 +1,211 @@
 # Controllers Reference
 
-This page explains all controller files in [server/controllers](../../server/controllers).
+This page documents the current controllers in [server/controllers](../../server/controllers).
 
-Controller role in this project:
-- validate request data
-- run business logic
-- call models and utils
-- return standardized JSON response
+## Auth controller
 
----
-
-## 1) Auth Controller
 File: [server/controllers/authController.js](../../server/controllers/authController.js)
 
 Exports:
-- `register`
-- `login`
-- `logout`
 
-How it works:
-- register:
-  - validates required user fields
-  - checks duplicate email/username
-  - hashes password with bcrypt
-  - optionally uploads profile image to Cloudinary
-  - creates User document
-  - signs JWT and sets auth cookie
-- login:
-  - validates email/password
-  - fetches user with password field explicitly
-  - compares password hash
-  - signs JWT and sets cookie
-- logout:
-  - clears auth cookie/session response
+- register
+- login
+- logout
 
-COMMENT:
-- `generateToken` utility is used for JWT creation.
+Behavior:
 
----
+- register validates required fields, checks duplicate users, hashes password, optionally uploads profile image, creates user, then sets token cookie.
+- login validates credentials, compares password hash, then sets token cookie (`sameSite: "none"`, `secure: true`).
+- logout clears cookie using configurable cookie flags.
 
-## 2) User Controller
+## User controller
+
 File: [server/controllers/userController.js](../../server/controllers/userController.js)
 
 Exports:
-- `getUserProfile`
-- `updateProfile`
-- `uploadProfilePicture`
-- `getPublicProfiles`
-- `getPublicProfileByUsername`
 
-How it works:
-- profile read/update uses `req.user` from auth middleware
-- profile picture upload uses multer memory buffer + Cloudinary stream upload
-- public profile listing supports search + pagination
+- upload (multer instance)
+- getUserProfile
+- updateProfile
+- uploadProfilePicture
+- getPublicProfiles
+- getPublicProfileByUsername
 
-WATCH OUT:
-- if auth cookie is missing, protected profile endpoints return 401 before this controller runs.
+Behavior:
 
----
+- profile APIs use `req.user` from auth middleware.
+- updateProfile checks username uniqueness.
+- uploadProfilePicture streams image buffer to Cloudinary.
+- public profile endpoints support search and pagination.
 
-## 3) Course Controller
+## Course controller
+
 File: [server/controllers/courseController.js](../../server/controllers/courseController.js)
 
 Exports:
-- `getAllCourses`
-- `getCourseById`
-- `createCourse`
-- `enrollInCourse`
-- `getEnrolledCourses`
-- `checkEnrollment`
-- `getCourseProgress`
-- `markLessonComplete`
-- `markCourseComplete`
 
-How it works:
-- reads and writes Course and User docs together for enrollment
-- uses map-like progress tracking in user document
-- role-restricted create endpoint for Admin/Instructor/Mod
+- getAllCourses
+- getCourseById
+- enrollInCourse
+- getEnrolledCourses
+- checkEnrollment
+- createCourse
+- markLessonComplete
+- getCourseProgress
+- markCourseComplete
 
-COMMENT:
-- enrollment consistency between User and Course is maintained at controller level.
+Behavior:
 
----
+- read endpoints transform course documents for frontend shape.
+- enrollment updates both User and Course enrollment arrays.
+- createCourse seeds sample modules into new courses.
+- progress is stored in `User.CourseProgress` map.
 
-## 4) Book Controller
+## Book controller
+
 File: [server/controllers/bookController.js](../../server/controllers/bookController.js)
 
 Exports:
-- `createBook`
-- `getAllBooks`
-- `getBookById`
-- `updateBook`
-- `deleteBook`
-- `getUserBooks`
 
-How it works:
-- createBook:
-  - requires PDF file
-  - uploads to Cloudinary (`raw` PDF)
-  - saves metadata in Book model
-- getAllBooks:
-  - supports filter/sort/pagination
-  - returns signed/accessible download URL using cloudinaryDownload util
-- getBookById:
-  - increments download counter
-  - returns accessible URL
-- update/delete:
-  - ownership checks using `uploadedBy`
+- createBook
+- getAllBooks
+- getBookById
+- updateBook
+- deleteBook
+- getUserBooks
 
-WATCH OUT:
-- mod role delete restrictions are also enforced in logic.
+Behavior:
 
----
+- createBook requires file upload and stores Cloudinary `secure_url` in DB.
+- getAllBooks supports filtering, search, sorting, and pagination.
+- getBookById increments downloads count.
+- update/delete enforce owner checks.
+- moderators are blocked from delete in this controller.
 
-## 5) Note Controller
+NOTE:
+
+- current responses return stored `fileUrl` values directly.
+
+## Note controller
+
 File: [server/controllers/noteController.js](../../server/controllers/noteController.js)
 
 Exports:
-- `createNote`
-- `getAllNotes`
-- `getNoteById`
-- `updateNote`
-- `deleteNote`
-- `getUserNotes`
-- `getNotesByCourse`
 
-How it works:
-- supports content modes:
-  - file
-  - manual
-  - both
-- file uploads are optional depending on contentType
-- reads include signed-accessible file URLs when file exists
-- list endpoints support filtering and pagination
+- createNote
+- getAllNotes
+- getNoteById
+- updateNote
+- deleteNote
+- getUserNotes
+- getNotesByCourse
 
-COMMENT:
-- this controller is more flexible than books because note content can be manual text only.
+Behavior:
 
----
+- supports `contentType` values: file/manual/both.
+- file is optional depending on contentType.
+- list/detail endpoints provide pagination and download count increment on detail.
+- owner checks on update/delete.
 
-## 6) Research Paper Controller
+## Research paper controller
+
 File: [server/controllers/researchPaperController.js](../../server/controllers/researchPaperController.js)
 
 Exports:
-- `createResearchPaper`
-- `getAllResearchPapers`
-- `getResearchPaperById`
-- `updateResearchPaper`
-- `deleteResearchPaper`
-- `getUserResearchPapers`
-- `incrementCitations`
 
-How it works:
-- requires PDF upload for creation
-- parses authors and keywords arrays from comma-separated input
-- supports filters by field/year/peer-reviewed status
-- increments download count on detail fetch
-- citations can be incremented from dedicated endpoint
+- createResearchPaper
+- getAllResearchPapers
+- getResearchPaperById
+- updateResearchPaper
+- deleteResearchPaper
+- getUserResearchPapers
+- incrementCitations
 
----
+Behavior:
 
-## 7) Admin Controller
+- creation requires PDF upload.
+- parses comma-separated authors/keywords.
+- supports search/filter/sort/pagination.
+- increments downloads on detail endpoint.
+- increments citations through dedicated endpoint.
+
+## Admin controller
+
 File: [server/controllers/adminController.js](../../server/controllers/adminController.js)
 
-Main exported groups:
-- user CRUD + instructor verification
-- course management
-- content management for notes/books/papers
-- dashboard stats and reporting endpoints
-- notifications/settings endpoints
+Exports cover:
 
-How it works:
-- central admin control layer for moderation/operations
-- pulls metrics from multiple models
-- some endpoints are placeholders/stubs for future implementation
+- user/instructor CRUD and verification
+- course CRUD
+- content listing/deletion (notes/books/papers)
+- stats + analytics + reports
+- audit logs aggregation (Vercel + Render + local fallback)
+- in-memory notifications CRUD
+- in-memory platform settings read/update
 
-TIP:
-- treat this file as an operations dashboard API backend.
+WATCH OUT:
 
----
+- this file mixes real DB-backed data and in-memory demo data.
 
-## 8) Moderation Controller
+## Moderation controller
+
 File: [server/controllers/modController.js](../../server/controllers/modController.js)
 
 Exports:
-- `getModerationOverview`
-- `getModerationNotes`
-- `getModerationBooks`
-- `getModerationPapers`
-- `deleteModerationNote`
-- `deleteModerationBook`
-- `deleteModerationPaper`
 
-How it works:
-- fetches moderation-friendly datasets
-- overview combines counts + recent uploads
-- deletion actions are sensitive and role-checked
+- getModerationOverview
+- getModerationNotes
+- getModerationBooks
+- getModerationPapers
+- deleteModerationNote
+- deleteModerationBook
+- deleteModerationPaper
 
----
+Behavior:
 
-## 9) Support Controller
+- overview uses `Promise.all` for counts and recent lists.
+- list endpoints return latest content with uploader info.
+
+## Support controller
+
 File: [server/controllers/supportController.js](../../server/controllers/supportController.js)
 
 Export:
-- `getSupportBotReply`
 
-How it works:
-- first tries FAQ/knowledge-base style matching
-- if no match, calls external AI provider (OpenRouter)
-- returns model response or fallback message
-- works with chatbot rate limit middleware
+- getSupportBotReply
 
-WATCH OUT:
-- external API key and provider settings must be valid in env.
+Behavior:
 
----
+- validates message and max length.
+- answers from local FAQ first.
+- consumes role-based AI quota.
+- uses OpenRouter primary/fallback model strategy.
+- returns fallback reply if key/provider is unavailable.
 
-## 10) Payment Controller
+## Payment controller
+
 File: [server/controllers/paymentController.js](../../server/controllers/paymentController.js)
 
 Export:
-- `createPayment`
 
-How it works:
-- currently placeholder for payment integration flow.
+- createPayment
 
----
+Behavior:
 
-## 11) Other Controller
+- placeholder response only (integration pending).
+
+## Other controller
+
 File: [server/controllers/otherController.js](../../server/controllers/otherController.js)
 
 Exports:
-- `getRoot`
-- `getAbout`
-- `getContact`
-- `getPrivacy`
-- `getTerms`
 
-How it works:
-- simple informational/public endpoints.
+- getRoot
+- getAbout
+- getContact
+- getPrivacy
+- getTerms
+
+Behavior:
+
+- simple text responses for root and static page routes.

@@ -48,26 +48,7 @@ Used by:
 
 ---
 
-## 4) Cloudinary download URL utility
-File: [server/utils/cloudinaryDownload.js](../../server/utils/cloudinaryDownload.js)
-
-Exports:
-- `getAccessibleFileUrl`
-- `withAccessibleFileUrl`
-
-Purpose:
-- converts stored Cloudinary raw URLs into signed/access-friendly URLs for downloads.
-
-How it helps:
-- improves reliability for PDF delivery
-- provides temporary signed URLs
-
-Used by:
-- book/note/research read/list responses
-
----
-
-## 5) Add course content utility
+## 4) Add course content utility
 File: [server/utils/addCourseContent.js](../../server/utils/addCourseContent.js)
 
 Purpose:
@@ -78,7 +59,7 @@ Typical usage:
 
 ---
 
-## 6) Seed courses utility
+## 5) Seed courses utility
 File: [server/utils/seedCourses.js](../../server/utils/seedCourses.js)
 
 Purpose:
@@ -89,7 +70,7 @@ Run with:
 
 ---
 
-## 7) Profile picture migration utility
+## 6) Profile picture migration utility
 File: [server/utils/migrateProfilePictures.js](../../server/utils/migrateProfilePictures.js)
 
 Purpose:
@@ -97,6 +78,17 @@ Purpose:
 
 Use case:
 - cleanup when moving from local paths to cloud URLs.
+
+---
+
+## 7) User completion migration utility
+File: [server/utils/migrateUserCompletion.js](../../server/utils/migrateUserCompletion.js)
+
+Purpose:
+- backfills completion-related fields for older user documents.
+
+Use case:
+- migration after schema updates (`Courses_Completed`, `CourseProgress`).
 
 ---
 
@@ -108,6 +100,14 @@ Purpose:
 
 Use case:
 - data consistency maintenance after partial failures or legacy data issues.
+
+---
+
+## Note on current utility set
+
+NOTE:
+- The current `server/utils` folder does not include a `cloudinaryDownload.js` helper file.
+- Content controllers currently return stored Cloudinary URLs as-is.
 
 ---
 

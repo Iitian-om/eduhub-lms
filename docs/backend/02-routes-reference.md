@@ -1,10 +1,8 @@
 # Routes Reference
 
-This file documents all route files in [server/routes](../../server/routes) and how they map to controllers.
+This file documents the current route modules in [server/routes](../../server/routes).
 
-NOTE: `server.js` mounts route prefixes.
-
-## Route mounting map (from server.js)
+## Mounted route prefixes (from server.js)
 
 - /api/v1/auth -> [server/routes/authRoutes.js](../../server/routes/authRoutes.js)
 - /api/v1/users -> [server/routes/userRoutes.js](../../server/routes/userRoutes.js)
@@ -17,185 +15,152 @@ NOTE: `server.js` mounts route prefixes.
 - /api/v1/mod -> [server/routes/modRoutes.js](../../server/routes/modRoutes.js)
 - /api/v1/support -> [server/routes/supportRoutes.js](../../server/routes/supportRoutes.js)
 - / -> [server/routes/otherRoutes.js](../../server/routes/otherRoutes.js)
-- catch-all 404 -> [server/routes/pageNotFound.js](../../server/routes/pageNotFound.js)
+- fallback -> [server/routes/pageNotFound.js](../../server/routes/pageNotFound.js)
 
----
+## Auth routes
 
-## 1) Auth Routes
 File: [server/routes/authRoutes.js](../../server/routes/authRoutes.js)
-Base: /api/v1/auth
 
-- POST /register -> authController.register
-- POST /login -> authController.login
-- POST /logout -> authController.logout
+- POST /register -> `upload.single("profilePic")` -> register
+- POST /login -> login
+- POST /logout -> logout
 
-COMMENT:
-- Registration/login create JWT cookie sessions.
+## User routes (all authenticated)
 
----
-
-## 2) User Routes
 File: [server/routes/userRoutes.js](../../server/routes/userRoutes.js)
-Base: /api/v1/users
 
-All protected with `isAuthenticated`.
+- GET /profile -> getUserProfile
+- PUT /profile -> updateProfile
+- POST /profile/upload -> `upload.single("profile_picture")` -> uploadProfilePicture
+- GET /profiles -> getPublicProfiles
+- GET /profiles/:userName -> getPublicProfileByUsername
 
-- GET /profile -> userController.getUserProfile
-- PUT /profile -> userController.updateProfile
-- POST /profile/upload -> userController.uploadProfilePicture
-- GET /profiles -> userController.getPublicProfiles
-- GET /profiles/:userName -> userController.getPublicProfileByUsername
+## Course routes
 
-COMMENT:
-- `req.user` comes from auth middleware.
-
----
-
-## 3) Course Routes
 File: [server/routes/courseRoutes.js](../../server/routes/courseRoutes.js)
-Base: /api/v1/courses
 
 Public:
-- GET / -> courseController.getAllCourses
-- GET /:id -> courseController.getCourseById
+
+- GET /
+- GET /:id
 
 Authenticated:
-- GET /enrolled/courses -> courseController.getEnrolledCourses
-- POST /enroll -> courseController.enrollInCourse
-- GET /check-enrollment/:courseId -> courseController.checkEnrollment
-- GET /progress/:courseId -> courseController.getCourseProgress
-- POST /lesson/complete -> courseController.markLessonComplete
-- POST /complete/:courseId -> courseController.markCourseComplete
 
-Role-restricted create:
-- POST / -> courseController.createCourse
-  - requires isAuthenticated + authorizeRoles(Admin, Instructor, Mod)
+- GET /enrolled/courses
+- POST /enroll
+- GET /check-enrollment/:courseId
+- GET /progress/:courseId
+- POST /lesson/complete
+- POST /complete/:courseId
 
----
+Authenticated + role restricted:
 
-## 4) Book Routes
+- POST / (Admin, Instructor, Mod)
+
+## Book routes
+
 File: [server/routes/bookRoutes.js](../../server/routes/bookRoutes.js)
-Base: /api/v1/books
 
 Public:
-- GET / -> bookController.getAllBooks
-- GET /:id -> bookController.getBookById
-- GET /user/:userId -> bookController.getUserBooks
 
-Protected:
-- POST / -> uploadBook + handleFileUploadError + createBook
-- PUT /:id -> updateBook
-- DELETE /:id -> deleteBook
+- GET /
+- GET /:id
+- GET /user/:userId
 
-COMMENT:
-- `uploadBook` handles PDF validation and memory buffering.
+Authenticated:
 
----
+- POST / -> `uploadBook` + `handleFileUploadError` + createBook
+- PUT /:id
+- DELETE /:id
 
-## 5) Note Routes
+## Note routes
+
 File: [server/routes/noteRoutes.js](../../server/routes/noteRoutes.js)
-Base: /api/v1/notes
 
 Public:
-- GET / -> noteController.getAllNotes
-- GET /:id -> noteController.getNoteById
-- GET /user/:userId -> noteController.getUserNotes
-- GET /course/:courseId -> noteController.getNotesByCourse
 
-Protected:
-- POST / -> uploadNote + handleFileUploadError + createNote
-- PUT /:id -> updateNote
-- DELETE /:id -> deleteNote
+- GET /
+- GET /:id
+- GET /user/:userId
+- GET /course/:courseId
 
----
+Authenticated:
 
-## 6) Research Paper Routes
+- POST / -> `uploadNote` + `handleFileUploadError` + createNote
+- PUT /:id
+- DELETE /:id
+
+## Research paper routes
+
 File: [server/routes/researchPaperRoutes.js](../../server/routes/researchPaperRoutes.js)
-Base: /api/v1/research-papers
 
 Public:
-- GET / -> researchPaperController.getAllResearchPapers
-- GET /:id -> researchPaperController.getResearchPaperById
-- GET /user/:userId -> researchPaperController.getUserResearchPapers
-- PUT /:id/citations -> researchPaperController.incrementCitations
 
-Protected:
-- POST / -> uploadResearchPaper + handleFileUploadError + createResearchPaper
-- PUT /:id -> updateResearchPaper
-- DELETE /:id -> deleteResearchPaper
+- GET /
+- GET /:id
+- GET /user/:userId
+- PUT /:id/citations
 
----
+Authenticated:
 
-## 7) Admin Routes
+- POST / -> `uploadResearchPaper` + `handleFileUploadError` + createResearchPaper
+- PUT /:id
+- DELETE /:id
+
+## Admin routes (admin-only)
+
 File: [server/routes/adminRoutes.js](../../server/routes/adminRoutes.js)
-Base: /api/v1/admin
 
-All endpoints use:
-- isAuthenticated
-- authorizeRoles("Admin")
+Guard: `isAuthenticated` + `authorizeRoles("Admin")` on all endpoints.
 
-Main groups:
-- users management
-- instructors management
-- courses management
-- content management (books/notes/papers)
-- stats/reports/analytics/audit logs
-- notifications settings management
+Groups:
 
-COMMENT:
-- This is the highest-privilege API surface.
+- User and instructor management
+- Course management
+- Content management
+- Stats, analytics, reports, audit logs
+- Notifications CRUD
+- Platform settings
 
----
+## Moderation routes
 
-## 8) Moderation Routes
 File: [server/routes/modRoutes.js](../../server/routes/modRoutes.js)
-Base: /api/v1/mod
 
-All endpoints use:
-- isAuthenticated
-- authorizeRoles("Admin", "Mod")
+Read access guard: Admin or Mod
 
-Main endpoints:
 - GET /overview
 - GET /notes
 - GET /books
 - GET /papers
+
+Delete guard: Admin only
+
 - DELETE /notes/:id
 - DELETE /books/:id
 - DELETE /papers/:id
 
-WATCH OUT:
-- Delete in moderation may still be restricted in controller by role checks.
+## Support routes
 
----
-
-## 9) Support Routes
 File: [server/routes/supportRoutes.js](../../server/routes/supportRoutes.js)
-Base: /api/v1/support
 
-Protected:
-- POST /chatbot -> chatbotRateLimit + supportController.getSupportBotReply
+POST /chatbot middleware order:
 
-COMMENT:
-- Per-role rate limiting is enforced before AI response.
+1. isAuthenticated
+2. authorizeRoles(User, Instructor, Admin, Mod)
+3. chatbotRateLimit
+4. getSupportBotReply
 
----
+## Payment routes
 
-## 10) Payment Routes
 File: [server/routes/paymentRoutes.js](../../server/routes/paymentRoutes.js)
-Base: /api/v1/payment
 
-Protected:
-- POST /payment -> paymentController.createPayment
+- POST /payment (authenticated)
 
-NOTE:
-- Current implementation is placeholder/stub.
+NOTE: controller is currently a placeholder.
 
----
+## Other public routes
 
-## 11) Other Routes (public pages)
 File: [server/routes/otherRoutes.js](../../server/routes/otherRoutes.js)
-Base: /
 
 - GET /
 - GET /about
@@ -203,10 +168,9 @@ Base: /
 - GET /privacy
 - GET /terms
 
----
+## Fallback route
 
-## 12) 404 Route
 File: [server/routes/pageNotFound.js](../../server/routes/pageNotFound.js)
 
-- Catch-all fallback when no route matches.
-- Must remain last in [server/server.js](../../server/server.js).
+- Defines `GET /` in the fallback router and returns 404 JSON.
+- Intended as the final not-found handler because it is mounted last in `server.js`.

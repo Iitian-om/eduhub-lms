@@ -1,13 +1,13 @@
 # Quick Start (Backend)
 
-This page helps you run the backend locally for the first time.
+This guide helps you run the current backend code quickly.
 
 ## 1) Requirements
 
-- Node.js 18+ (recommended: latest LTS)
+- Node.js 18+
 - pnpm
-- MongoDB Atlas (or local MongoDB)
-- Cloudinary account
+- MongoDB (Atlas or local)
+- Cloudinary account (needed for file uploads)
 
 ## 2) Install dependencies
 
@@ -17,48 +17,52 @@ From project root:
 pnpm install
 ```
 
-From backend folder:
+Then:
 
 ```bash
 cd server
 pnpm install
 ```
 
-## 3) Create environment variables
+## 3) Setup environment
 
-Use:
-- [server/.env.example](../../server/.env.example)
+Create [server/.env](../../server/.env) (you can copy from [server/.env.example](../../server/.env.example) if available).
 
-Create:
-- [server/.env](../../server/.env)
-
-Minimum variables you need:
+Minimum required values:
 
 ```env
 PORT=5000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_super_secret_key
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_secret
 NODE_ENV=development
 
 CLOUDINARY_CLOUD_NAME=...
 CLOUDINARY_API_KEY=...
 CLOUDINARY_API_SECRET=...
+
+OPENROUTER_API_KEY=...   # optional, used by support AI
 ```
 
-NOTE: If Cloudinary variables are missing, uploads will fail.
+NOTE: if Cloudinary variables are missing, profile/content uploads will fail.
 
-## 4) Start backend
+## 4) Run the backend
 
 ```bash
 cd server
 pnpm dev
 ```
 
-You should see DB connection + server start log in terminal.
+You should see MongoDB connection logs and server startup logs.
 
-## 5) Base API paths
+## 5) Available scripts (current)
 
-Common base routes:
+From [server/package.json](../../server/package.json):
+
+- `pnpm dev` -> nodemon server
+- `pnpm start` -> node server
+- `pnpm seed` -> run sample course seeder
+
+## 6) Main API prefixes
 
 - /api/v1/auth
 - /api/v1/users
@@ -71,36 +75,20 @@ Common base routes:
 - /api/v1/mod
 - /api/v1/support
 
-## 6) First API smoke test
+## 7) Auth cookie behavior
 
-Open browser/Postman:
-- GET http://localhost:5000/
-
-Expected: welcome JSON message.
-
-## 7) Auth and cookies (important)
-
-This backend stores JWT in cookies.
+This backend uses cookie-based JWT auth.
 
 WATCH OUT:
-- Frontend requests must include credentials.
-- If using fetch, use `credentials: "include"`.
-- If using axios, use `withCredentials: true`.
 
-## 8) Common startup errors
+- Frontend must send credentials on API calls.
+- fetch: `credentials: "include"`
+- axios: `withCredentials: true`
 
-- DB connection failed:
-  - check MONGO_URI
-  - check DB network access/IP whitelist
-- 401 Not logged in:
-  - no auth cookie sent
-- Cloudinary upload error:
-  - check Cloudinary env keys
+## 8) First smoke test
 
-## 9) Helpful scripts
+Request:
 
-In [server/package.json](../../server/package.json):
+- GET http://localhost:5000/
 
-- `pnpm dev` -> start with nodemon
-- `pnpm start` -> production-style start
-- `pnpm seed` -> seed initial courses
+Expected response body: plain text welcome message from `otherController.getRoot`.

@@ -73,8 +73,9 @@ COMMENT:
 File: [server/middlewares/chatbotRateLimit.js](../../server/middlewares/chatbotRateLimit.js)
 
 Exports:
-- rate-limit middleware function
-- quota helper(s) used by support flow
+- `chatbotRateLimit`
+- `consumeAiChatQuota`
+- `getChatbotRateLimitStatus`
 
 How it works:
 - limits AI chatbot usage per user role
@@ -98,4 +99,4 @@ Example B (file upload route):
 - route -> isAuthenticated -> upload middleware -> handleFileUploadError -> controller
 
 Example C (support chatbot):
-- route -> isAuthenticated -> chatbotRateLimit -> controller
+- route -> isAuthenticated -> authorizeRoles(User, Instructor, Admin, Mod) -> chatbotRateLimit -> controller

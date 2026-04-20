@@ -56,8 +56,7 @@ Route:
 Flow:
 1. bookController.getAllBooks reads query filters
 2. Book model query with pagination and sorting
-3. cloudinaryDownload utility converts each fileUrl
-4. response includes books + pagination object
+3. response includes books + pagination object
 
 ---
 
@@ -84,10 +83,11 @@ Route:
 
 Flow:
 1. isAuthenticated ensures logged user
-2. chatbotRateLimit checks remaining quota
-3. supportController.getSupportBotReply
-4. FAQ match or external AI fallback
-5. response includes bot answer and status metadata
+2. authorizeRoles(User, Instructor, Admin, Mod) checks role
+3. chatbotRateLimit checks remaining quota
+4. supportController.getSupportBotReply
+5. FAQ match or external AI fallback
+6. response includes bot answer and status metadata
 
 ---
 

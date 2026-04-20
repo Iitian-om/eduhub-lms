@@ -1,8 +1,8 @@
-# EduHub Backend Documentation (Beginner Guide)
+# EduHub Backend Docs (Updated To Current Code)
 
-This folder explains the complete backend in simple language.
+This folder explains the backend in beginner-friendly language and matches the current implementation under `server/`.
 
-If you are new to Node.js + Express + MongoDB, start here and read the files in this order:
+Start reading in this order:
 
 1. [00-quick-start.md](00-quick-start.md)
 2. [01-architecture-and-request-flow.md](01-architecture-and-request-flow.md)
@@ -13,40 +13,30 @@ If you are new to Node.js + Express + MongoDB, start here and read the files in 
 7. [06-utils-reference.md](06-utils-reference.md)
 8. [07-how-modules-communicate.md](07-how-modules-communicate.md)
 
----
+## Backend entrypoint
 
-## What this backend does
+- Main file: [server/server.js](../../server/server.js)
 
-- Handles authentication (register/login/logout)
-- Manages users and public profiles
-- Manages courses and enrollments
-- Uploads and serves books, notes, and research papers
-- Uses Cloudinary for file hosting
-- Uses MongoDB for app data
-- Provides admin/moderation and support chatbot APIs
+From this file, the app:
 
----
+1. Loads environment values
+2. Configures core middleware (JSON, cookies, CORS)
+3. Mounts all route modules
+4. Connects to MongoDB
+5. Starts Express server
 
-## Backend entry point
+## What this backend currently handles
 
-Main server entry file:
-- [server/server.js](../../server/server.js)
+- Authentication and cookie-based sessions
+- User profile and public profile APIs
+- Courses and enrollment/progress tracking
+- Books, notes, and research papers (PDF upload + metadata)
+- Admin and moderation panels
+- Support chatbot with FAQ + AI fallback + rate limiting
+- Payment endpoint placeholder
 
-From there:
-- Express app starts
-- global middlewares run
-- route modules are mounted
-- controllers execute business logic
-- models read/write MongoDB
-- utils support shared operations (DB, JWT, Cloudinary, etc.)
+## Comment labels used in docs
 
----
-
-## Comment legend used in docs
-
-To keep this beginner-friendly, each section uses short comment-style notes:
-
-- NOTE: Important concept
-- WHY: Why this part exists
-- WATCH OUT: Common beginner mistake
-- TIP: Practical shortcut
+- NOTE: important behavior
+- WATCH OUT: common mistakes
+- TIP: practical recommendation
