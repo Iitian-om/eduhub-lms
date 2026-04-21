@@ -1,3 +1,6 @@
+// Utility file to Configure Cloudinary Access 
+// Also provide helper functions for uploading, generating URLs, and deleting files.
+
 import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
 dotenv.config();

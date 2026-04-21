@@ -1,26 +1,29 @@
 "use client";
 
-import { useUser } from '../../context/UserContext'; // ✅ Correct hook import
+import { useUser } from '../../context/UserContext'; // Correct hook import
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { API_BASE_URL } from "../../utils/api";
 
-export const dynamic = "force-dynamic"; // ✅ Fix Vercel build crash
+export const dynamic = "force-dynamic"; // Fix Vercel build crash
 
 export default function EditProfilePage() {
   const { user, setUser, loading } = useUser();
-  const router = useRouter();
+  const router = useRouter();   // For programmatic navigation after profile update
   
+  // Form state for profile fields
   const [formData, setFormData] = useState({
     name: "",
-    userName: "",
+    // userName: "", Removed to make userName immutable
     bio: "",
     phone: "",
     location: "",
     gender: ""
   });
+
+  // State for profile picture file and submission status respectfully
   const [selectedFile, setSelectedFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -30,15 +33,16 @@ export default function EditProfilePage() {
     } else if (user) {
       setFormData({
         name: user.name || "",
-        userName: user.userName || "",
+        // userName: user.userName || "", Removed to make userName immutable
         bio: user.bio || "",
         phone: user.phone || "",
         location: user.location || "",
         gender: user.gender || ""
       });
     }
-  }, [user, loading, router]);
+  }, [user, loading, router]);      // Redirect to login if not authenticated, otherwise populate form with user data
 
+  // Handle input changes for text fields and radio buttons
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -47,6 +51,7 @@ export default function EditProfilePage() {
     }));
   };
 
+  // Handle file input change for profile picture
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -71,7 +76,9 @@ export default function EditProfilePage() {
         body: formData,
       });
 
+      // Expecting response to contain { success: true, profile_picture: "url" }
       const data = await response.json();
+      toast.success("Profile picture uploaded successfully!");
 
       if (!response.ok) {
         throw new Error(data.message || "Failed to upload profile picture");
@@ -84,6 +91,7 @@ export default function EditProfilePage() {
     }
   };
 
+  // Main form submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -121,7 +129,10 @@ export default function EditProfilePage() {
   };
 
   if (loading) return <div>Loading...</div>;
-  if (!user) return null;
+  if (!user) {
+    router.push("/login");
+    return null;
+  }
 
   return (
     <div className="min-h-[90vh] bg-[#F7F9FA] flex flex-col items-center px-4 py-8">
@@ -186,7 +197,8 @@ export default function EditProfilePage() {
             />
           </div>
 
-          <div>
+          {/* Username (read-only because it's IMMUTABLE NOW) */}
+          {/* <div>
             <label htmlFor="userName" className="block text-sm font-medium text-gray-700 mb-2">
               Username *
             </label>
@@ -201,9 +213,10 @@ export default function EditProfilePage() {
               maxLength={15}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#29C7C9] focus:border-transparent"
               placeholder="Enter your username"
+              readOnly
             />
             <p className="text-xs text-gray-500 mt-1">3-15 characters, lowercase</p>
-          </div>
+          </div> */}
 
           <div>
             <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-2">
