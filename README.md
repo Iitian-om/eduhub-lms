@@ -110,6 +110,12 @@ eduhub-lms/
 ```
 ---
 
+## 📊 Repository Analytics
+
+[![Repo Analytics](https://next.ossinsight.io/widgets/official/analyze-repo-stars-history/thumbnail.png?repo_id=1006038378&image_size=auto)](https://ossinsight.io/analyze/Iitian-om/eduhub-lms)
+
+---
+
 ## 📄 License
 
 _Well you need to ask the iitp adminisration for the License because It is Built for the capstone project-I of my college 2nd semester under the guidance my course instructor with my college team._
